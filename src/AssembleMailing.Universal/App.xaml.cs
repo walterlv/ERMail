@@ -7,6 +7,8 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Walterlv.AssembleMailing.Views;
+using Walterlv.AssembleMailing.ViewModels;
 
 namespace Walterlv.AssembleMailing
 {
@@ -21,8 +23,8 @@ namespace Walterlv.AssembleMailing
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-            this.Suspending += OnSuspending;
+            InitializeComponent();
+            Suspending += OnSuspending;
         }
 
         /// <summary>
@@ -59,7 +61,11 @@ namespace Walterlv.AssembleMailing
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(Walterlv.AssembleMailing.Views.MainPage), e.Arguments);
+                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    if (rootFrame.Content is FrameworkElement page)
+                    {
+                        page.DataContext = new MainViewModel();
+                    }
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

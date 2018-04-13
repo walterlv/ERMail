@@ -9,7 +9,7 @@ namespace Walterlv.AssembleMailing
     {
         static void Main(string[] args)
         {
-            BuildAvaloniaApp().Start<MainWindow>(() => new MainWindowViewModel());
+            BuildAvaloniaApp().Start<MainWindow>(() => new MainViewModel());
         }
 
         public static AppBuilder BuildAvaloniaApp()

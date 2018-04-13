@@ -1,11 +1,11 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:Walterlv.AssembleMailing.ViewModels;assembly=AssembleMailing"
+        xmlns:vm="clr-namespace:Walterlv.AssembleMailing.ViewModels;assembly=AssembleMailing.Core"
         Icon="resm:Walterlv.AssembleMailing.Assets.avalonia-logo.ico"
         Title="Assemble Mailing">
 
   <Design.DataContext>
-    <vm:MainWindowViewModel/>
+    <vm:MainViewModel/>
   </Design.DataContext>
   
   <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
