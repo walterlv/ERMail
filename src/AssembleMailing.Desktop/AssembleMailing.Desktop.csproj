@@ -1,19 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
     <RootNamespace>Walterlv.AssembleMailing</RootNamespace>
     <AssemblyName>AssembleMailing</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <Compile Update="**\*.xaml.cs" DependentUpon="%(Filename)" />
+    <EmbeddedResource Include="**\*.xaml" SubType="Designer" />
     <EmbeddedResource Include="Assets\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\AssembleMailing.Universal\Views\MainPage.xaml.cs" Link="Views\MainWindow.xaml.cs" DependentUpon="MainWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.6.1" />
