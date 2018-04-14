@@ -18,6 +18,9 @@
     <EmbeddedResource Include="Assets\*" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Views\MailPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\AssembleMailing.Universal\Views\MainPage.xaml.cs" Link="Views\MainWindow.xaml.cs" DependentUpon="MainWindow.xaml" />
   </ItemGroup>
   <ItemGroup>

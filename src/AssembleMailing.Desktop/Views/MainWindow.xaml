@@ -1,13 +1,33 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:Walterlv.AssembleMailing.Views"
         xmlns:vm="clr-namespace:Walterlv.AssembleMailing.ViewModels;assembly=AssembleMailing.Core"
         Icon="resm:Walterlv.AssembleMailing.Assets.avalonia-logo.ico"
-        Title="Assemble Mailing">
+        Title="Assemble Mailing" Design.Width="1280" Design.Height="720">
 
   <Design.DataContext>
     <vm:MainViewModel/>
   </Design.DataContext>
-  
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+  <Grid RowDefinitions="72,40,*">
+    <Grid Grid.Row="0" Background="#E64545" TextBlock.Foreground="White">
+      <TextBlock Margin="12 8" Text="Assemble Mailing" FontSize="12" />
+      <ToggleButton Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    BorderThickness="0" Foreground="White" Background="Transparent"
+                    FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE700;" />
+      <ListBox MinWidth="120" Height="40" Margin="40 0 0 0" BorderThickness="0" Background="Transparent"
+               HorizontalAlignment="Left" VerticalAlignment="Bottom" Items="{Binding MailBoxes}" />
+      <TextBox Width="240" Height="32" Margin="4"
+               HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+    </Grid>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Background="White">
+      
+    </StackPanel>
+
+    <Border Grid.Row="2" DataContext="{Binding CurrentMailBox.CurrentFolder}">
+      <v:MailPage />
+    </Border>
+  </Grid>
   
 </Window>
