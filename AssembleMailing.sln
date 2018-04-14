@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Blend for Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssembleMailing.Desktop", "src\AssembleMailing.Desktop\AssembleMailing.Desktop.csproj", "{DA212E0A-06A6-4CA0-995C-010F3D2CC4BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssembleMailing.Desktop", "src\AssembleMailing.Desktop\AssembleMailing.Desktop.csproj", "{DA212E0A-06A6-4CA0-995C-010F3D2CC4BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssembleMailing.Universal", "src\AssembleMailing.Universal\AssembleMailing.Universal.csproj", "{4D1DA296-843D-41FD-B2A1-8EA4FACF2254}"
 EndProject

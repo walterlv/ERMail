@@ -1,4 +1,5 @@
 ﻿#if WINDOWS_UWP
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #else
 using Avalonia;
@@ -14,6 +15,7 @@ namespace Walterlv.AssembleMailing.Views
         public MainPage()
         {
             InitializeComponent();
+            // VisualStateManager.GoToState(MenuButton, "OverflowWithMenuIcons", false);
         }
 #else
     public class MainWindow : Window

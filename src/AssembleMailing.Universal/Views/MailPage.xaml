@@ -5,22 +5,65 @@
     xmlns:local="using:Walterlv.AssembleMailing.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:vm="using:Walterlv.AssembleMailing.ViewModels"
+    mc:Ignorable="d" d:DataContext="{d:DesignData MailBoxFolderViewModel}">
+    <Page.Resources>
+        <Style x:Key="Style.MailGroupListViewItem" TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Grid Height="81" BorderThickness="0 1 1 0">
+                            <Grid.BorderBrush>
+                                <AcrylicBrush BackgroundSource="HostBackdrop"
+                                              TintOpacity="0" FallbackColor="#A2A7A2" />
+                            </Grid.BorderBrush>
+                            <Grid.Background>
+                                <AcrylicBrush BackgroundSource="HostBackdrop"
+                                              TintColor="White" TintOpacity="0.875"
+                                              FallbackColor="#E7E8EC" />
+                            </Grid.Background>
+                            <ContentPresenter />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="320" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <ListView Grid.Column="0">
+
+        <ListView Grid.Column="0" ItemsSource="{Binding Mails}"
+                  ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="vm:MailGroupViewModel">
+                    <Grid Margin="12 8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1.5*" />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   FontSize="18" Text="{Binding Title}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   FontSize="12" Text="{Binding Topic}" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                   FontSize="12" Foreground="DimGray" Text="{Binding Excerpt}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
             <ListView.Background>
-                <AcrylicBrush FallbackColor="#BFC3C9" TintOpacity="0.0"
-                              BackgroundSource="HostBackdrop" />
+                <AcrylicBrush BackgroundSource="HostBackdrop" TintOpacity="0" FallbackColor="#E7E8EC" />
             </ListView.Background>
         </ListView>
-        
-        <WebView Grid.Column="1" />
 
+        <WebView Grid.Column="1" />
     </Grid>
 </Page>
