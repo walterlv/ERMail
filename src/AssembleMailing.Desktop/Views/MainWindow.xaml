@@ -21,9 +21,12 @@
                HorizontalAlignment="Right" VerticalAlignment="Bottom" />
     </Grid>
 
-    <StackPanel Grid.Row="1" Orientation="Horizontal" Background="White">
-      
-    </StackPanel>
+    <Grid Grid.Row="1">
+      <StackPanel Orientation="Horizontal" Background="White">
+
+      </StackPanel>
+      <Rectangle Fill="#CACACC" Height="1" VerticalAlignment="Bottom" />
+    </Grid>
 
     <Border Grid.Row="2" DataContext="{Binding CurrentMailBox.CurrentFolder}">
       <v:MailPage />
