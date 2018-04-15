@@ -144,7 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssembleMailing.Core\AssembleMailing.Core.csproj">
-      <Project>{A410373E-F9B5-4129-8F8E-97C2FCD3870D}</Project>
+      <Project>{a410373e-f9b5-4129-8f8e-97c2fcd3870d}</Project>
       <Name>AssembleMailing.Core</Name>
     </ProjectReference>
   </ItemGroup>
