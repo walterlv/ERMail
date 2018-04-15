@@ -1,15 +1,10 @@
-﻿#if WINDOWS_UWP
+﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-#else
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-#endif
+using Windows.UI.Xaml.Navigation;
 
 namespace Walterlv.AssembleMailing.Views
 {
-#if WINDOWS_UWP
     public sealed partial class MainPage : Page
     {
         public MainPage()
@@ -17,17 +12,14 @@ namespace Walterlv.AssembleMailing.Views
             InitializeComponent();
             // VisualStateManager.GoToState(MenuButton, "OverflowWithMenuIcons", false);
         }
-#else
-    public class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            AvaloniaXamlLoader.Load(this);
-#if DEBUG
-            this.AttachDevTools();
-#endif
-        }
-#endif
 
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            var config = new ConfigMailBoxDialog();
+            await config.ShowAsync();
+            var (userName, password) = (config.UserName, config.Password);
+        }
     }
 }
