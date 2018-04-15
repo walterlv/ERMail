@@ -37,7 +37,7 @@ namespace Walterlv.AssembleMailing.Views
 
             try
             {
-                await client.ConnectAsync();
+                await client.TestConnectionAsync();
                 deferral.Complete();
             }
             catch (AuthenticationException ex)

@@ -21,7 +21,7 @@ namespace Walterlv.AssembleMailing.Mailing
 
         public string Password { get; }
 
-        public async Task ConnectAsync()
+        public async Task TestConnectionAsync()
         {
             using (var client = new ImapClient())
             {
@@ -30,6 +30,15 @@ namespace Walterlv.AssembleMailing.Mailing
                 await client.AuthenticateAsync(UserName, Password);
                 client.Disconnect(true);
             }
+        }
+
+        public async Task<ImapClient> ConnectAsync()
+        {
+            var client = new ImapClient();
+            // client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            await client.ConnectAsync(Host, Port, true);
+            await client.AuthenticateAsync(UserName, Password);
+            return client;
         }
     }
 }
