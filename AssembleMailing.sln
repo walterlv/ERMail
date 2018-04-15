@@ -1,17 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
+# Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssembleMailing.Desktop", "src\AssembleMailing.Desktop\AssembleMailing.Desktop.csproj", "{DA212E0A-06A6-4CA0-995C-010F3D2CC4BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssembleMailing.Desktop", "src\AssembleMailing.Desktop\AssembleMailing.Desktop.csproj", "{DA212E0A-06A6-4CA0-995C-010F3D2CC4BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssembleMailing.Universal", "src\AssembleMailing.Universal\AssembleMailing.Universal.csproj", "{4D1DA296-843D-41FD-B2A1-8EA4FACF2254}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FF18DB4D-A38B-4A55-9549-7E084A48FF2B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1472BF6A-97F5-47ED-A987-F4CF07A61AA9}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssembleMailing.Core", "src\AssembleMailing.Core\AssembleMailing.Core.csproj", "{A410373E-F9B5-4129-8F8E-97C2FCD3870D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssembleMailing.Core", "src\AssembleMailing.Core\AssembleMailing.Core.csproj", "{A410373E-F9B5-4129-8F8E-97C2FCD3870D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "README", "README", "{1DEFDD2D-23F3-4121-860E-4347A7EF5E7F}"
+	ProjectSection(SolutionItems) = preProject
+		README.jp.md = README.jp.md
+		README.md = README.md
+		README.zh-chs.md = README.zh-chs.md
+		README.zh-cht.md = README.zh-cht.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{C9D0FAE1-9DA2-4EE5-A308-9A0911DF71C4}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		GitVersion.config = GitVersion.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +105,8 @@ Global
 		{DA212E0A-06A6-4CA0-995C-010F3D2CC4BF} = {FF18DB4D-A38B-4A55-9549-7E084A48FF2B}
 		{4D1DA296-843D-41FD-B2A1-8EA4FACF2254} = {FF18DB4D-A38B-4A55-9549-7E084A48FF2B}
 		{A410373E-F9B5-4129-8F8E-97C2FCD3870D} = {FF18DB4D-A38B-4A55-9549-7E084A48FF2B}
+		{1DEFDD2D-23F3-4121-860E-4347A7EF5E7F} = {1472BF6A-97F5-47ED-A987-F4CF07A61AA9}
+		{C9D0FAE1-9DA2-4EE5-A308-9A0911DF71C4} = {1472BF6A-97F5-47ED-A987-F4CF07A61AA9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5E30582-D01A-42FB-BEC3-5B930DDA8E13}
