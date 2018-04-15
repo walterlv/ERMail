@@ -29,7 +29,6 @@ namespace Walterlv.AssembleMailing.Mailing
         {
             if (!File.Exists(ConfigFileName))
             {
-                File.Create(ConfigFileName);
                 return new MailBoxConfiguration();
             }
             return await Task.Run(() => Read()).ConfigureAwait(false);

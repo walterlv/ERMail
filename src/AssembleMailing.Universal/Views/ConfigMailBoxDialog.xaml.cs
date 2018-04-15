@@ -1,64 +1,55 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using Windows.Security.Credentials;
-using Windows.Storage;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using MailKit.Security;
 using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
-
-// The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Walterlv.AssembleMailing.Views
 {
     public sealed partial class ConfigMailBoxDialog : ContentDialog
     {
-        private readonly MailBoxConfigurationFile _configurationFile;
-
-        public ConfigMailBoxDialog()
+        public ConfigMailBoxDialog(MailBoxConnectionInfo connectionInfo)
         {
             InitializeComponent();
-
-            var localFolder = ApplicationData.Current.LocalFolder;
-            _configurationFile = new MailBoxConfigurationFile(
-                Path.Combine(localFolder.Path, "MailBoxConfiguration.json"));
-            Loaded += OnLoaded;
+            ConnectionInfo = connectionInfo;
         }
 
-        private async void OnLoaded(object sender, RoutedEventArgs e)
+        public MailBoxConnectionInfo ConnectionInfo
         {
-            var configuration = await _configurationFile.ReadAsync();
-            ConnectionInfo = configuration.Connections.FirstOrDefault() ?? new MailBoxConnectionInfo();
+            get => (MailBoxConnectionInfo) DataContext;
+            set => DataContext = value;
         }
 
-        public MailBoxConnectionInfo ConnectionInfo { get; private set; }
+        private string ErrorTip { get; set; }
 
-        private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
         {
-            e.Cancel = true;
-            if (!ConnectionInfo.Validate()) return;
+        }
+
+        private async void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
+        {
+            var info = ConnectionInfo;
+            if (!info.Validate()) return;
             var deferral = e.GetDeferral();
 
-            var client = new MailClient(ConnectionInfo.IncomingServerHost,
-                ConnectionInfo.IncomingServerPort > 0 ? ConnectionInfo.IncomingServerPort : 993,
-                ConnectionInfo.UserName, ConnectionInfo.Password);
-            await client.ConnectAsync();
+            var client = new MailClient(info.UserName, info.Password,
+                info.IncomingServerHost, info.IncomingServerPort > 0 ? info.IncomingServerPort : (int?) null);
 
-            var vault = new PasswordVault();
-            vault.Add(new PasswordCredential(MailVaultResourceName, ConnectionInfo.Address, ConnectionInfo.Password));
-
-            var configuration = new MailBoxConfiguration();
-            configuration.Connections.Add(ConnectionInfo);
-            await _configurationFile.SaveAsync(configuration);
-
-            deferral.Complete();
+            try
+            {
+                await client.ConnectAsync();
+                deferral.Complete();
+            }
+            catch (AuthenticationException ex)
+            {
+                e.Cancel = true;
+                ErrorTip = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                e.Cancel = true;
+                ErrorTip = ex.Message;
+            }
         }
-
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
-        {
-        }
-
-        private const string MailVaultResourceName = "Walterlv.AssembleMailing";
     }
 }

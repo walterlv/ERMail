@@ -95,10 +95,11 @@
                               FallbackColor="#BEC1C7" />
             </Grid.Background>
             <TextBlock Margin="12 8" Text="Assemble Mailing" FontSize="12" />
-            <ToggleButton Width="40" Height="40" VerticalAlignment="Bottom"
-                          Style="{ThemeResource ToggleButtonRevealStyle}">
+            <Button Width="40" Height="40" VerticalAlignment="Bottom"
+                    Style="{ThemeResource ButtonRevealStyle}"
+                    Click="ConfigButton_Click">
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" />
-            </ToggleButton>
+            </Button>
             <ListView MinWidth="120" Height="40" Margin="40 0 0 0"
                       HorizontalAlignment="Left" VerticalAlignment="Bottom"
                       ItemContainerStyle="{StaticResource Style.HeaderListViewItem}"
