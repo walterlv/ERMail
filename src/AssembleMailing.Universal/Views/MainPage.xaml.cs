@@ -8,6 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MailKit;
+using MimeKit;
 using MimeKit.Text;
 using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
@@ -64,10 +65,10 @@ namespace Walterlv.AssembleMailing.Views
         {
             var configuration = await _configurationFile.ReadAsync();
             var address = configuration.Connections.Select(x => x.Address).FirstOrDefault();
-            await ConfigConnectionInfo(address);
             var info = await ConfigConnectionInfo(address);
             if (info != null)
             {
+                ViewModel.MailBoxes[0].DisplayName = info.AccountName;
                 await FetchMailsAsync(info);
             }
         }
@@ -86,17 +87,27 @@ namespace Walterlv.AssembleMailing.Views
 
             var folder = ViewModel.CurrentMailBox.CurrentFolder;
             folder.Mails.Clear();
-            for (var i = inbox.Count - 1; i > inbox.Count - 21; i--)
+            var messageSummaries = await inbox.FetchAsync(inbox.Count - 20, inbox.Count - 1,
+                MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
+            foreach (var summary in messageSummaries.Reverse())
             {
-                var message = await inbox.GetMessageAsync(i);
+                TextPart body;
+                try
+                {
+                    body = (TextPart)await inbox.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
+                }
+                catch (Exception ex)
+                {
+                    body = null;
+                }
+
                 folder.Mails.Add(new MailGroupViewModel
                 {
-                    Title = message.From.FirstOrDefault()?.Name ?? "(Anonymous)",
-                    Topic = message.Subject,
-                    Excerpt = message.GetTextBody(TextFormat.Plain),
+                    Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
+                    Topic = summary.Envelope.Subject,
+                    Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
                 });
             }
-
             folder.Mails.Add(new MailGroupViewModel());
         }
 

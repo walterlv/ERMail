@@ -110,9 +110,11 @@
                         <TextBlock Grid.Row="0" Grid.Column="0"
                                    FontSize="18" Text="{Binding Title}" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                   FontSize="12" Text="{Binding Topic}" />
+                                   FontSize="12" Text="{Binding Topic}"
+                                   TextTrimming="WordEllipsis" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                   FontSize="12" Foreground="DimGray" Text="{Binding Excerpt}" />
+                                   FontSize="12" Foreground="DimGray" Text="{Binding Excerpt}"
+                                   TextTrimming="WordEllipsis" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
