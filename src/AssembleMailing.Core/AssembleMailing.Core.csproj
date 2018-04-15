@@ -12,7 +12,4 @@
     <PackageReference Include="MailKit" Version="2.0.2" />
     <PackageReference Include="ReactiveUI" Version="8.0.0-alpha0117" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
 </Project>

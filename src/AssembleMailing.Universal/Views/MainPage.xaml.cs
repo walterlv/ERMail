@@ -19,7 +19,6 @@ namespace Walterlv.AssembleMailing.Views
 
             var config = new ConfigMailBoxDialog();
             await config.ShowAsync();
-            var (userName, password) = (config.UserName, config.Password);
         }
     }
 }

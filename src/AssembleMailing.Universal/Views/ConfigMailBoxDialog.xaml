@@ -5,7 +5,8 @@
     xmlns:local="using:Walterlv.AssembleMailing.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" BorderBrush="#E64545"
+    xmlns:models="using:Walterlv.AssembleMailing.Models"
+    mc:Ignorable="d"
     Title="Add an account"
     PrimaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
@@ -27,19 +28,19 @@
                   Width="360" MinHeight="240" MaxHeight="300">
         <StackPanel>
             <TextBlock Text="Email address" />
-            <TextBox PlaceholderText="someone@example.com" Text="{x:Bind Address, Mode=TwoWay}" />
+            <TextBox PlaceholderText="someone@example.com" Text="{x:Bind ConnectionInfo.Address, Mode=TwoWay}" />
             <TextBlock Text="User name (for signing in)" />
-            <TextBox Text="{x:Bind UserName, Mode=TwoWay}" />
+            <TextBox Text="{x:Bind ConnectionInfo.UserName, Mode=TwoWay}" />
             <TextBlock Text="Password (for signing in)" />
-            <PasswordBox Password="{x:Bind Password, Mode=TwoWay}" />
+            <PasswordBox Password="{x:Bind ConnectionInfo.Password, Mode=TwoWay}" />
             <TextBlock Text="Account name (will be displayed on the app header)" />
-            <TextBox Text="{x:Bind AccountName, Mode=TwoWay}" />
+            <TextBox Text="{x:Bind ConnectionInfo.AccountName, Mode=TwoWay}" />
             <TextBlock Text="Envelope name (will be in the mail content)" />
-            <TextBox Text="{x:Bind EnvelopeName, Mode=TwoWay}" />
+            <TextBox Text="{x:Bind ConnectionInfo.EnvelopeName, Mode=TwoWay}" />
             <TextBlock Text="Incoming mail server" />
-            <TextBox PlaceholderText="example.com or example.com:993" Text="{x:Bind IncomingServer, Mode=TwoWay}" />
+            <TextBox PlaceholderText="example.com or example.com:993" Text="{x:Bind ConnectionInfo.IncomingServer, Mode=TwoWay}" />
             <TextBlock Text="Outgoing (SMTP) mail server" />
-            <TextBox PlaceholderText="example.com or example.com:465" Text="{x:Bind OutgoingServer, Mode=TwoWay}" />
+            <TextBox PlaceholderText="example.com or example.com:465" Text="{x:Bind ConnectionInfo.OutgoingServer, Mode=TwoWay}" />
             <TextBlock Margin="0 8 0 32" TextWrapping="WrapWholeWords"
                        Text="We'll save this information, so you don't have to sign in every time." />
         </StackPanel>
