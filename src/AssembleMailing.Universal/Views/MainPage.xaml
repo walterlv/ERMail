@@ -100,7 +100,7 @@
                     Click="ConfigButton_Click">
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" />
             </Button>
-            <ListView MinWidth="120" Height="40" Margin="40 0 0 0"
+            <ListView x:Name="MailBoxListView" MinWidth="120" Height="40" Margin="40 0 0 0"
                       HorizontalAlignment="Left" VerticalAlignment="Bottom"
                       ItemContainerStyle="{StaticResource Style.HeaderListViewItem}"
                       ItemsPanel="{StaticResource Template.HeaderItemsPanel}"

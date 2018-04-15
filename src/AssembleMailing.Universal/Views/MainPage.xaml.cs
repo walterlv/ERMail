@@ -47,6 +47,7 @@ namespace Walterlv.AssembleMailing.Views
                     CurrentFolder = folderViewModel,
                     MailAddress = storedInfo.Address,
                 });
+                MailBoxListView.SelectedIndex = 0;
                 await FetchMailsAsync(storedInfo);
             }
             else
