@@ -27,8 +27,11 @@ namespace Walterlv.AssembleMailing.Mailing
 
         public async Task<MailBoxConfiguration> ReadAsync()
         {
-            if (!File.Exists(ConfigFileName)) return new MailBoxConfiguration();
-
+            if (!File.Exists(ConfigFileName))
+            {
+                File.Create(ConfigFileName);
+                return new MailBoxConfiguration();
+            }
             return await Task.Run(() => Read()).ConfigureAwait(false);
         }
 

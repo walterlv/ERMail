@@ -50,13 +50,10 @@ namespace Walterlv.AssembleMailing.Models
             set => SetAndValidate(out _outgoingServerHost, out _outgoingServerPort, value);
         }
 
-        public string IncomingServerHost => _incomingServerHost;
-
-        public int IncomingServerPort => _incomingServerPort;
-        
-        public string OutgoingServerHost => _outgoingServerHost;
-
-        public int OutgoingServerPort => _outgoingServerPort;
+        [JsonIgnore] public string IncomingServerHost => _incomingServerHost;
+        [JsonIgnore] public int IncomingServerPort => _incomingServerPort;
+        [JsonIgnore] public string OutgoingServerHost => _outgoingServerHost;
+        [JsonIgnore] public int OutgoingServerPort => _outgoingServerPort;
 
         private static void SetHostPort(out string hostField, out int portField, string value)
         {
@@ -120,9 +117,16 @@ namespace Walterlv.AssembleMailing.Models
         [ContractPublicPropertyName(nameof(EnvelopeName))]
         private string _envelopeName;
 
+        [ContractPublicPropertyName(nameof(IncomingServerHost))]
         private string _incomingServerHost;
+
+        [ContractPublicPropertyName(nameof(IncomingServerPort))]
         private int _incomingServerPort;
+
+        [ContractPublicPropertyName(nameof(OutgoingServerHost))]
         private string _outgoingServerHost;
+
+        [ContractPublicPropertyName(nameof(OutgoingServerPort))]
         private int _outgoingServerPort;
     }
 }

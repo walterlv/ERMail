@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using Windows.Security.Credentials;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Walterlv.AssembleMailing.Mailing;
@@ -11,15 +14,22 @@ namespace Walterlv.AssembleMailing.Views
 {
     public sealed partial class ConfigMailBoxDialog : ContentDialog
     {
+        private readonly MailBoxConfigurationFile _configurationFile;
+
         public ConfigMailBoxDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+
+            var localFolder = ApplicationData.Current.LocalFolder;
+            _configurationFile = new MailBoxConfigurationFile(
+                Path.Combine(localFolder.Path, "MailBoxConfiguration.json"));
             Loaded += OnLoaded;
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            ConnectionInfo = new MailBoxConnectionInfo();
+            var configuration = await _configurationFile.ReadAsync();
+            ConnectionInfo = configuration.Connections.FirstOrDefault() ?? new MailBoxConnectionInfo();
         }
 
         public MailBoxConnectionInfo ConnectionInfo { get; private set; }
@@ -38,6 +48,9 @@ namespace Walterlv.AssembleMailing.Views
             var vault = new PasswordVault();
             vault.Add(new PasswordCredential(MailVaultResourceName, ConnectionInfo.Address, ConnectionInfo.Password));
 
+            var configuration = new MailBoxConfiguration();
+            configuration.Connections.Add(ConnectionInfo);
+            await _configurationFile.SaveAsync(configuration);
 
             deferral.Complete();
         }
