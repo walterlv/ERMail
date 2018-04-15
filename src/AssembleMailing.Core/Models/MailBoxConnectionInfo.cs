@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace Walterlv.AssembleMailing.Models
 {
@@ -18,6 +19,7 @@ namespace Walterlv.AssembleMailing.Models
             set => SetAndValidate(ref _userName, value);
         }
 
+        [JsonIgnore]
         public string Password
         {
             get => _password;
