@@ -24,9 +24,9 @@ namespace Walterlv.AssembleMailing.Views
 
         private async void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs e)
         {
-            if ((e.NewValue as MailBoxViewModel)?.ConnectionInfo is MailBoxConnectionInfo info)
+            if (e.NewValue is MailBoxViewModel vm && vm.ConnectionInfo is MailBoxConnectionInfo info)
             {
-                await FetchFoldersAsync(info);
+                await FetchFoldersAsync(info, vm);
             }
         }
 
@@ -59,14 +59,14 @@ namespace Walterlv.AssembleMailing.Views
             }
         }
 
-        private async Task FetchFoldersAsync(MailBoxConnectionInfo info)
+        private static async Task FetchFoldersAsync(MailBoxConnectionInfo info, MailBoxViewModel viewModel)
         {
             if (string.IsNullOrEmpty(info.Password))
             {
                 FillPassword(info);
             }
 
-            ViewModel.Folders.Clear();
+            viewModel.Folders.Clear();
             using (var client = await new IncomingMailClient(info).ConnectAsync())
             {
                 var inbox = client.Inbox;
@@ -75,7 +75,7 @@ namespace Walterlv.AssembleMailing.Views
                 var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0]);
                 foreach (var folder in new[] {inbox}.Union(folders))
                 {
-                    ViewModel.Folders.Add(new MailBoxFolderViewModel
+                    viewModel.Folders.Add(new MailBoxFolderViewModel
                     {
                         Name = folder.Name,
                         Separator = folder.DirectorySeparator,
@@ -83,11 +83,11 @@ namespace Walterlv.AssembleMailing.Views
                     });
                 }
 
-                MailFolderComboBox.SelectedIndex = 0;
+                viewModel.CurrentFolder = viewModel.Folders[0];
             }
         }
 
-        private async Task FetchMailsAsync(MailBoxConnectionInfo info, MailBoxFolderViewModel viewModel)
+        private static async Task FetchMailsAsync(MailBoxConnectionInfo info, MailBoxFolderViewModel viewModel)
         {
             using (var client = await new IncomingMailClient(info).ConnectAsync())
             {

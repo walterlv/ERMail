@@ -116,7 +116,7 @@
         </StackPanel>
 
         <ListView x:Name="MailListView" Grid.Row="1" Grid.Column="0"
-                  ItemsSource="{Binding Mails}"
+                  DataContext="{Binding CurrentFolder}" ItemsSource="{Binding Mails}"
                   BorderThickness="0 1 0 0" BorderBrush="{StaticResource Brush.ListBorder}"
                   ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}"
                   SelectionChanged="MailGroupListView_SelectionChanged">

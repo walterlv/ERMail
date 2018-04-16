@@ -28,11 +28,20 @@ namespace Walterlv.AssembleMailing.ViewModels
         public ObservableCollection<MailBoxFolderViewModel> Folders { get; }
             = new ObservableCollection<MailBoxFolderViewModel>();
 
+        public MailBoxFolderViewModel CurrentFolder
+        {
+            get => _currentFolder;
+            set => this.RaiseAndSetIfChanged(ref _currentFolder, value);
+        }
+
         [ContractPublicPropertyName(nameof(DisplayName))]
         private string _displayName;
 
         [ContractPublicPropertyName(nameof(MailAddress))]
         private string _mailAddress;
+
+        [ContractPublicPropertyName(nameof(CurrentFolder))]
+        private MailBoxFolderViewModel _currentFolder;
 
         [ContractPublicPropertyName(nameof(ConnectionInfo))]
         private MailBoxConnectionInfo _connectionInfo;
