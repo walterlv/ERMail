@@ -48,6 +48,7 @@ namespace Walterlv.AssembleMailing.Views
                     MailAddress = storedInfo.Address,
                 });
                 MailBoxListView.SelectedIndex = 0;
+                MailPage.ConnectionInfo = storedInfo;
                 await FetchMailsAsync(storedInfo);
             }
             else
@@ -55,6 +56,7 @@ namespace Walterlv.AssembleMailing.Views
                 var info = await ConfigConnectionInfo();
                 if (info != null)
                 {
+                    MailPage.ConnectionInfo = info;
                     await FetchMailsAsync(info);
                 }
             }
@@ -67,6 +69,7 @@ namespace Walterlv.AssembleMailing.Views
             var info = await ConfigConnectionInfo(address);
             if (info != null)
             {
+                MailPage.ConnectionInfo = info;
                 ViewModel.MailBoxes[0].DisplayName = info.AccountName;
                 await FetchMailsAsync(info);
             }
@@ -99,12 +102,14 @@ namespace Walterlv.AssembleMailing.Views
                         body = null;
                     }
 
-                    folder.Mails.Add(new MailGroupViewModel
+                    var mailGroup = new MailGroupViewModel
                     {
                         Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
                         Topic = summary.Envelope.Subject,
                         Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
-                    });
+                    };
+                    mailGroup.MailIds.Add(summary.UniqueId.Id);
+                    folder.Mails.Add(mailGroup);
                 }
 
                 folder.Mails.Add(new MailGroupViewModel());

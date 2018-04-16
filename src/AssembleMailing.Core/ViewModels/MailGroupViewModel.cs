@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using ReactiveUI;
 
 namespace Walterlv.AssembleMailing.ViewModels
@@ -22,6 +23,8 @@ namespace Walterlv.AssembleMailing.ViewModels
             get => _excerpt;
             set => this.RaiseAndSetIfChanged(ref _excerpt, value);
         }
+
+        public ObservableCollection<uint> MailIds { get; } = new ObservableCollection<uint>();
 
         [ContractPublicPropertyName(nameof(Title))]
         private string _title;

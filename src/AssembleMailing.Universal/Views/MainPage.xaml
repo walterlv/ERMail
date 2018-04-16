@@ -25,8 +25,8 @@
                             <Grid.Background>
                                 <RevealBackgroundBrush />
                             </Grid.Background>
-                            <ContentPresenter />
-                            <Rectangle x:Name="SelectedIndicator" Height="4" VerticalAlignment="Bottom"
+                            <ContentPresenter x:Name="Content" />
+                            <Rectangle x:Name="SelectedIndicator" Height="1" VerticalAlignment="Bottom"
                                        Fill="#E64545" Visibility="Collapsed"/>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -34,6 +34,7 @@
                                     <VisualState x:Name="Selected">
                                         <VisualState.Setters>
                                             <Setter Target="SelectedIndicator.Visibility" Value="Visible"/>
+                                            <Setter Target="Content.Foreground" Value="#E64545"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
@@ -45,6 +46,7 @@
                                         <VisualState.Setters>
                                             <Setter Target="Root.(RevealBrush.State)" Value="PointerOver"/>
                                             <Setter Target="SelectedIndicator.Visibility" Value="Visible"/>
+                                            <Setter Target="Content.Foreground" Value="#E64545"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PointerOverPressed">
@@ -61,6 +63,7 @@
                                         <VisualState.Setters>
                                             <Setter Target="Root.(RevealBrush.State)" Value="Pressed"/>
                                             <Setter Target="SelectedIndicator.Visibility" Value="Visible"/>
+                                            <Setter Target="Content.Foreground" Value="#E64545"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -91,7 +94,7 @@
         <Grid Grid.Row="0">
             <Grid.Background>
                 <AcrylicBrush BackgroundSource="HostBackdrop"
-                              TintColor="#E6E7E7" TintOpacity="0.5"
+                              TintColor="#E6E7E7" TintOpacity="0.75"
                               FallbackColor="#E6E7E7" />
             </Grid.Background>
             <TextBlock Margin="12 8" Text="Assemble Mailing" FontSize="12" />
@@ -132,7 +135,7 @@
         <!-- Mail details -->
         <Frame Grid.Row="2" DataContext="{Binding CurrentMailBox.CurrentFolder}">
             <Frame.Content>
-                <local:MailPage />
+                <local:MailPage x:Name="MailPage" />
             </Frame.Content>
         </Frame>
     </Grid>

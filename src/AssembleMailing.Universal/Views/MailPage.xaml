@@ -8,7 +8,6 @@
     xmlns:vm="using:Walterlv.AssembleMailing.ViewModels"
     mc:Ignorable="d" d:DataContext="{d:DesignData MailBoxFolderViewModel}">
     <Page.Resources>
-
         <AcrylicBrush x:Key="Brush.ListBorder" BackgroundSource="HostBackdrop" TintOpacity="0" FallbackColor="#A2A7A2" />
         <Style x:Key="Style.MailGroupListViewItem" TargetType="ListViewItem">
             <Setter Property="Template">
@@ -23,8 +22,10 @@
                                 <Border.BorderBrush>
                                     <RevealBorderBrush />
                                 </Border.BorderBrush>
-                                <ContentPresenter />
+                                <ContentPresenter Margin="4 0 0 0" />
                             </Border>
+                            <Rectangle x:Name="SelectedIndicator" Width="4" HorizontalAlignment="Left"
+                                       Fill="#E64545" Visibility="Collapsed"/>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
@@ -34,6 +35,7 @@
                                             <Setter Target="Reveal.FallbackColor" Value="#FFFFFF"/>
                                             <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
                                             <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="SelectedIndicator.Visibility" Value="Visible"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
@@ -48,6 +50,7 @@
                                             <Setter Target="Reveal.FallbackColor" Value="#FFFFFF"/>
                                             <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
                                             <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="SelectedIndicator.Visibility" Value="Visible"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PointerOverPressed">
@@ -69,6 +72,7 @@
                                             <Setter Target="Reveal.Color" Value="#7F999999"/>
                                             <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
                                             <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="SelectedIndicator.Visibility" Value="Visible"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -96,7 +100,8 @@
 
         <ListView Grid.Column="0" ItemsSource="{Binding Mails}"
                   BorderThickness="0 1 0 0" BorderBrush="{StaticResource Brush.ListBorder}"
-                  ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}">
+                  ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}"
+                  SelectionChanged="MailGroupListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:MailGroupViewModel">
                     <Grid Margin="12 8">
@@ -132,6 +137,6 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <WebView Grid.Column="1" />
+        <WebView Grid.Column="1" x:Name="WebView" />
     </Grid>
 </Page>
