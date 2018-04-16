@@ -138,5 +138,13 @@
         </Rectangle>
 
         <WebView Grid.Column="1" x:Name="WebView" />
+
+        <CommandBar Grid.Column="1" VerticalAlignment="Bottom"
+                    Background="{ThemeResource SystemControlAcrylicElementBrush}" >
+            <AppBarButton />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Grid>
 </Page>
