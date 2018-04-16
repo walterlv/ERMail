@@ -1,16 +1,29 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MailKit.Net.Imap;
+using Walterlv.AssembleMailing.Models;
 
 namespace Walterlv.AssembleMailing.Mailing
 {
-    public class MailClient
+    public class IncomingMailClient
     {
-        public MailClient(string userName, string password, string host, int? port = null)
+        public IncomingMailClient(string userName, string password, string host, int port = 0)
         {
-            UserName = userName;
-            Password = password;
-            Host = host;
-            Port = port ?? 993;
+            UserName = userName ?? throw new ArgumentNullException(nameof(userName));
+            Password = password ?? throw new ArgumentNullException(nameof(password));
+            Host = host ?? throw new ArgumentNullException(nameof(host));
+            if (port < 0)
+            {
+                throw new ArgumentException(
+                    "IncomingServerPort should be larger than 0 (or by default 0).", nameof(port));
+            }
+
+            Port = port > 0 ? port : 993;
+        }
+
+        public IncomingMailClient(MailBoxConnectionInfo info)
+            : this(info.UserName, info.Password, info.IncomingServerHost, info.IncomingServerPort)
+        {
         }
 
         public string Host { get; }

@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MailKit;
 using MimeKit;
-using MimeKit.Text;
 using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
 using Walterlv.AssembleMailing.ViewModels;
@@ -79,36 +78,37 @@ namespace Walterlv.AssembleMailing.Views
             {
                 FillPassword(info);
             }
-            var client = new MailClient(info.UserName, info.Password,
-                info.IncomingServerHost, info.IncomingServerPort > 0 ? info.IncomingServerPort : (int?) null);
-            var mailClient = await client.ConnectAsync();
-            var inbox = mailClient.Inbox;
-            inbox.Open(FolderAccess.ReadOnly);
-
-            var folder = ViewModel.CurrentMailBox.CurrentFolder;
-            folder.Mails.Clear();
-            var messageSummaries = await inbox.FetchAsync(inbox.Count - 20, inbox.Count - 1,
-                MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
-            foreach (var summary in messageSummaries.Reverse())
+            using (var client = await new IncomingMailClient(info).ConnectAsync())
             {
-                TextPart body;
-                try
+                var inbox = client.Inbox;
+                inbox.Open(FolderAccess.ReadOnly);
+
+                var folder = ViewModel.CurrentMailBox.CurrentFolder;
+                folder.Mails.Clear();
+                var messageSummaries = await inbox.FetchAsync(inbox.Count - 20, inbox.Count - 1,
+                    MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
+                foreach (var summary in messageSummaries.Reverse())
                 {
-                    body = (TextPart)await inbox.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
-                }
-                catch (Exception ex)
-                {
-                    body = null;
+                    TextPart body;
+                    try
+                    {
+                        body = (TextPart) await inbox.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
+                    }
+                    catch (Exception ex)
+                    {
+                        body = null;
+                    }
+
+                    folder.Mails.Add(new MailGroupViewModel
+                    {
+                        Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
+                        Topic = summary.Envelope.Subject,
+                        Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
+                    });
                 }
 
-                folder.Mails.Add(new MailGroupViewModel
-                {
-                    Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
-                    Topic = summary.Envelope.Subject,
-                    Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
-                });
+                folder.Mails.Add(new MailGroupViewModel());
             }
-            folder.Mails.Add(new MailGroupViewModel());
         }
 
         private async Task<MailBoxConnectionInfo> ConfigConnectionInfo(string address = null)

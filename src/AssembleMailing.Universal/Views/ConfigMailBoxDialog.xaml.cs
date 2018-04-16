@@ -32,8 +32,7 @@ namespace Walterlv.AssembleMailing.Views
             if (!info.Validate()) return;
             var deferral = e.GetDeferral();
 
-            var client = new MailClient(info.UserName, info.Password,
-                info.IncomingServerHost, info.IncomingServerPort > 0 ? info.IncomingServerPort : (int?) null);
+            var client = new IncomingMailClient(info);
 
             try
             {
