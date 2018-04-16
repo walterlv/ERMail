@@ -28,7 +28,7 @@
       <Rectangle Fill="#CACACC" Height="1" VerticalAlignment="Bottom" />
     </Grid>
 
-    <Border Grid.Row="2" DataContext="{Binding CurrentMailBox.CurrentFolder}">
+    <Border Grid.Row="2" DataContext="{Binding CurrentMailBox}">
       <v:MailPage />
     </Border>
   </Grid>

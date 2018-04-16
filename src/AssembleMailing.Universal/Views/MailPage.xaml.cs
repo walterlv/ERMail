@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using MailKit;
+using MailKit.Net.Imap;
 using MimeKit;
 using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
@@ -27,6 +28,15 @@ namespace Walterlv.AssembleMailing.Views
             {
                 await FetchMailsAsync(info);
             }
+        }
+
+        private async void MailFolderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ViewModel.ConnectionInfo is null) return;
+            if (!(e.AddedItems.FirstOrDefault() is MailBoxFolderViewModel vm)) return;
+
+            MailListView.DataContext = vm;
+            await FetchMailsAsync(ViewModel.ConnectionInfo, vm);
         }
 
         private async void MailGroupListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -55,22 +65,44 @@ namespace Walterlv.AssembleMailing.Views
             {
                 FillPassword(info);
             }
+
+            ViewModel.Folders.Clear();
             using (var client = await new IncomingMailClient(info).ConnectAsync())
             {
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadOnly);
 
-                var folder = ViewModel.CurrentFolder ?? new MailBoxFolderViewModel();
-                folder.Mails.Clear();
-                ViewModel.CurrentFolder = folder;
-                var messageSummaries = await inbox.FetchAsync(inbox.Count - 20, inbox.Count - 1,
+                var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0]);
+                foreach (var folder in new[] {inbox}.Union(folders))
+                {
+                    ViewModel.Folders.Add(new MailBoxFolderViewModel
+                    {
+                        Name = folder.Name,
+                        Separator = folder.DirectorySeparator,
+                        FullName = folder.FullName,
+                    });
+                }
+
+                MailFolderComboBox.SelectedIndex = 0;
+            }
+        }
+
+        private async Task FetchMailsAsync(MailBoxConnectionInfo info, MailBoxFolderViewModel viewModel)
+        {
+            using (var client = await new IncomingMailClient(info).ConnectAsync())
+            {
+                var folder = await client.GetFolderAsync(viewModel.FullName);
+                folder.Open(FolderAccess.ReadOnly);
+
+                viewModel.Mails.Clear();
+                var messageSummaries = await folder.FetchAsync(folder.Count - 20, folder.Count - 1,
                     MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
                 foreach (var summary in messageSummaries.Reverse())
                 {
                     TextPart body;
                     try
                     {
-                        body = (TextPart)await inbox.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
+                        body = (TextPart) await folder.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
                     }
                     catch (Exception ex)
                     {
@@ -84,10 +116,10 @@ namespace Walterlv.AssembleMailing.Views
                         Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
                     };
                     mailGroup.MailIds.Add(summary.UniqueId.Id);
-                    folder.Mails.Add(mailGroup);
+                    viewModel.Mails.Add(mailGroup);
                 }
 
-                folder.Mails.Add(new MailGroupViewModel());
+                viewModel.Mails.Add(new MailGroupViewModel());
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using ReactiveUI;
 using Walterlv.AssembleMailing.Models;
 
@@ -24,11 +25,8 @@ namespace Walterlv.AssembleMailing.ViewModels
             set => this.RaiseAndSetIfChanged(ref _connectionInfo, value);
         }
 
-        public MailBoxFolderViewModel CurrentFolder
-        {
-            get => _currentFolder;
-            set => this.RaiseAndSetIfChanged(ref _currentFolder, value);
-        }
+        public ObservableCollection<MailBoxFolderViewModel> Folders { get; }
+            = new ObservableCollection<MailBoxFolderViewModel>();
 
         [ContractPublicPropertyName(nameof(DisplayName))]
         private string _displayName;
@@ -38,8 +36,5 @@ namespace Walterlv.AssembleMailing.ViewModels
 
         [ContractPublicPropertyName(nameof(ConnectionInfo))]
         private MailBoxConnectionInfo _connectionInfo;
-
-        [ContractPublicPropertyName(nameof(CurrentFolder))]
-        private MailBoxFolderViewModel _currentFolder;
     }
 }

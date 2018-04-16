@@ -104,15 +104,18 @@
         </Grid.ColumnDefinitions>
 
         <!-- Mail functions -->
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
             <StackPanel.Background>
                 <AcrylicBrush BackgroundSource="HostBackdrop"
                               TintColor="White" TintOpacity="0.75"
                               FallbackColor="#F6F6F7" />
             </StackPanel.Background>
+            <ComboBox x:Name="MailFolderComboBox" Margin="4" MinWidth="200"
+                      ItemsSource="{Binding Folders}" DisplayMemberPath="Name"
+                      SelectionChanged="MailFolderComboBox_SelectionChanged"/>
         </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="0" DataContext="{Binding CurrentFolder}"
+        <ListView x:Name="MailListView" Grid.Row="1" Grid.Column="0"
                   ItemsSource="{Binding Mails}"
                   BorderThickness="0 1 0 0" BorderBrush="{StaticResource Brush.ListBorder}"
                   ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}"

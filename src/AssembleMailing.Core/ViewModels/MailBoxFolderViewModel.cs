@@ -1,9 +1,29 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using ReactiveUI;
 
 namespace Walterlv.AssembleMailing.ViewModels
 {
     public class MailBoxFolderViewModel : ViewModelBase
     {
+        public string Name
+        {
+            get => _name;
+            set => this.RaiseAndSetIfChanged(ref _name, value);
+        }
+
+        public string FullName
+        {
+            get => _fullName;
+            set => this.RaiseAndSetIfChanged(ref _fullName, value);
+        }
+
+        public char Separator
+        {
+            get => _separator;
+            set => this.RaiseAndSetIfChanged(ref _separator, value);
+        }
+
         public ObservableCollection<MailGroupViewModel> Mails { get; } = new ObservableCollection<MailGroupViewModel>
         {
             new MailGroupViewModel
@@ -61,5 +81,14 @@ namespace Walterlv.AssembleMailing.ViewModels
                 Excerpt = "Setting Hello, walterlv! Your Domain Migration task is completed.",
             },
         };
+
+        [ContractPublicPropertyName(nameof(Name))]
+        private string _name;
+
+        [ContractPublicPropertyName(nameof(FullName))]
+        private string _fullName;
+
+        [ContractPublicPropertyName(nameof(Separator))]
+        private char _separator;
     }
 }
