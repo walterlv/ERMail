@@ -10,9 +10,9 @@ namespace Walterlv.AssembleMailing.ViewModels
 
         public ObservableCollection<MailBoxViewModel> MailBoxes { get; } = new ObservableCollection<MailBoxViewModel>
         {
-            new MailBoxViewModel {DisplayName = "Outlook", CurrentFolder = new MailBoxFolderViewModel()},
-            new MailBoxViewModel {DisplayName = "Gmail", CurrentFolder = new MailBoxFolderViewModel()},
-            new MailBoxViewModel {DisplayName = "iCloud", CurrentFolder = new MailBoxFolderViewModel()},
+            new MailBoxViewModel {DisplayName = "Outlook"},
+            new MailBoxViewModel {DisplayName = "Gmail"},
+            new MailBoxViewModel {DisplayName = "iCloud"},
         };
 
         public MailBoxViewModel CurrentMailBox

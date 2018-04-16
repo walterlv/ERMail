@@ -86,7 +86,6 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="72" />
-            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -123,17 +122,8 @@
                             PlaceholderText="Search" />
         </Grid>
 
-        <!-- Mail functions -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <StackPanel.Background>
-                <AcrylicBrush BackgroundSource="HostBackdrop"
-                              TintColor="White" TintOpacity="0.75"
-                              FallbackColor="#F6F6F7" />
-            </StackPanel.Background>
-        </StackPanel>
-
         <!-- Mail details -->
-        <Frame Grid.Row="2" DataContext="{Binding CurrentMailBox.CurrentFolder}">
+        <Frame Grid.Row="1" DataContext="{Binding CurrentMailBox}">
             <Frame.Content>
                 <local:MailPage x:Name="MailPage" />
             </Frame.Content>

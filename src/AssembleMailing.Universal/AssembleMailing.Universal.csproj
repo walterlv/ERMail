@@ -96,6 +96,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\PasswordManager.cs" />
     <Compile Include="Views\ConfigMailBoxDialog.xaml.cs">
       <DependentUpon>ConfigMailBoxDialog.xaml</DependentUpon>
     </Compile>

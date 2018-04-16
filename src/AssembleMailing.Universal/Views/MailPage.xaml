@@ -6,7 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Walterlv.AssembleMailing.ViewModels"
-    mc:Ignorable="d" d:DataContext="{d:DesignData MailBoxFolderViewModel}">
+    mc:Ignorable="d" d:DataContext="{d:DesignData MailBoxViewModel}"
+    DataContextChanged="OnDataContextChanged">
     <Page.Resources>
         <AcrylicBrush x:Key="Brush.ListBorder" BackgroundSource="HostBackdrop" TintOpacity="0" FallbackColor="#A2A7A2" />
         <Style x:Key="Style.MailGroupListViewItem" TargetType="ListViewItem">
@@ -93,12 +94,26 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="320" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ListView Grid.Column="0" ItemsSource="{Binding Mails}"
+        <!-- Mail functions -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <StackPanel.Background>
+                <AcrylicBrush BackgroundSource="HostBackdrop"
+                              TintColor="White" TintOpacity="0.75"
+                              FallbackColor="#F6F6F7" />
+            </StackPanel.Background>
+        </StackPanel>
+
+        <ListView Grid.Row="1" Grid.Column="0" DataContext="{Binding CurrentFolder}"
+                  ItemsSource="{Binding Mails}"
                   BorderThickness="0 1 0 0" BorderBrush="{StaticResource Brush.ListBorder}"
                   ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}"
                   SelectionChanged="MailGroupListView_SelectionChanged">
@@ -131,15 +146,15 @@
                               FallbackColor="#E7E8EC" />
             </ListView.Background>
         </ListView>
-        <Rectangle Grid.Column="0" Height="1" VerticalAlignment="Top">
+        <Rectangle Grid.Row="1" Grid.Column="0" Height="1" VerticalAlignment="Top">
             <Rectangle.Fill>
                 <RevealBorderBrush />
             </Rectangle.Fill>
         </Rectangle>
 
-        <WebView Grid.Column="1" x:Name="WebView" />
+        <WebView Grid.Row="1" Grid.Column="1" x:Name="WebView" />
 
-        <CommandBar Grid.Column="1" VerticalAlignment="Bottom"
+        <CommandBar Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom"
                     Background="{ThemeResource SystemControlAcrylicElementBrush}" >
             <AppBarButton />
             <CommandBar.SecondaryCommands>

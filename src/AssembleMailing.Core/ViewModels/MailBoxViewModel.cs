@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using ReactiveUI;
+using Walterlv.AssembleMailing.Models;
 
 namespace Walterlv.AssembleMailing.ViewModels
 {
@@ -17,6 +18,12 @@ namespace Walterlv.AssembleMailing.ViewModels
             set => this.RaiseAndSetIfChanged(ref _mailAddress, value);
         }
 
+        public MailBoxConnectionInfo ConnectionInfo
+        {
+            get => _connectionInfo;
+            set => this.RaiseAndSetIfChanged(ref _connectionInfo, value);
+        }
+
         public MailBoxFolderViewModel CurrentFolder
         {
             get => _currentFolder;
@@ -28,6 +35,9 @@ namespace Walterlv.AssembleMailing.ViewModels
 
         [ContractPublicPropertyName(nameof(MailAddress))]
         private string _mailAddress;
+
+        [ContractPublicPropertyName(nameof(ConnectionInfo))]
+        private MailBoxConnectionInfo _connectionInfo;
 
         [ContractPublicPropertyName(nameof(CurrentFolder))]
         private MailBoxFolderViewModel _currentFolder;
