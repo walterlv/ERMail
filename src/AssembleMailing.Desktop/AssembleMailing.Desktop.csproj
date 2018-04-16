@@ -7,9 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs" DependentUpon="%(Filename)" />
-    <EmbeddedResource Include="**\*.xaml" SubType="Designer">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
+    <EmbeddedResource Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <EmbeddedResource Include="Assets\*" />
   </ItemGroup>
   <ItemGroup>
