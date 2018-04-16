@@ -26,7 +26,7 @@ namespace Walterlv.AssembleMailing.Views
         {
             if ((e.NewValue as MailBoxViewModel)?.ConnectionInfo is MailBoxConnectionInfo info)
             {
-                await FetchMailsAsync(info);
+                await FetchFoldersAsync(info);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Walterlv.AssembleMailing.Views
             }
         }
 
-        private async Task FetchMailsAsync(MailBoxConnectionInfo info)
+        private async Task FetchFoldersAsync(MailBoxConnectionInfo info)
         {
             if (string.IsNullOrEmpty(info.Password))
             {
