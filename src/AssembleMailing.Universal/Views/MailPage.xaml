@@ -8,19 +8,18 @@
     xmlns:vm="using:Walterlv.AssembleMailing.ViewModels"
     mc:Ignorable="d" d:DataContext="{d:DesignData MailBoxFolderViewModel}">
     <Page.Resources>
+
+        <AcrylicBrush x:Key="Brush.ListBorder" BackgroundSource="HostBackdrop" TintOpacity="0" FallbackColor="#A2A7A2" />
         <Style x:Key="Style.MailGroupListViewItem" TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
-                        <Grid x:Name="Root" Height="81" BorderThickness="0 1 1 0">
-                            <Grid.BorderBrush>
-                                <AcrylicBrush BackgroundSource="HostBackdrop"
-                                              TintOpacity="0" FallbackColor="#A2A7A2" />
-                            </Grid.BorderBrush>
+                        <Grid x:Name="Root" Height="81" BorderThickness="0 0 1 1"
+                              BorderBrush="{StaticResource Brush.ListBorder}">
                             <Grid.Background>
-                                <RevealBackgroundBrush x:Name="Reveal" />
+                                <RevealBackgroundBrush x:Name="Reveal" FallbackColor="#DBDEE2" />
                             </Grid.Background>
-                            <Border x:Name="Border" Margin="0 -1 -1 0" BorderThickness="0 1 1 0">
+                            <Border x:Name="Border" Margin="0 0 -1 -1" BorderThickness="0 1 2 2">
                                 <Border.BorderBrush>
                                     <RevealBorderBrush />
                                 </Border.BorderBrush>
@@ -32,8 +31,9 @@
                                     <VisualState x:Name="Selected">
                                         <VisualState.Setters>
                                             <Setter Target="Reveal.Color" Value="#7FFFFFFF"/>
-                                            <Setter Target="Root.BorderThickness" Value="0 1 0 0"/>
-                                            <Setter Target="Border.BorderThickness" Value="0 1 0 0"/>
+                                            <Setter Target="Reveal.FallbackColor" Value="#FFFFFF"/>
+                                            <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PointerOver">
@@ -45,8 +45,9 @@
                                         <VisualState.Setters>
                                             <Setter Target="Root.(RevealBrush.State)" Value="PointerOver"/>
                                             <Setter Target="Reveal.Color" Value="#7FFFFFFF"/>
-                                            <Setter Target="Root.BorderThickness" Value="0 1 0 0"/>
-                                            <Setter Target="Border.BorderThickness" Value="0 1 0 0"/>
+                                            <Setter Target="Reveal.FallbackColor" Value="#FFFFFF"/>
+                                            <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PointerOverPressed">
@@ -58,16 +59,16 @@
                                         <VisualState.Setters>
                                             <Setter Target="Root.(RevealBrush.State)" Value="Pressed"/>
                                             <Setter Target="Reveal.Color" Value="#7F999999"/>
-                                            <Setter Target="Root.BorderThickness" Value="0 1 0 0"/>
-                                            <Setter Target="Border.BorderThickness" Value="0 1 0 0"/>
+                                            <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                     <VisualState x:Name="PressedSelected">
                                         <VisualState.Setters>
                                             <Setter Target="Root.(RevealBrush.State)" Value="Pressed"/>
                                             <Setter Target="Reveal.Color" Value="#7F999999"/>
-                                            <Setter Target="Root.BorderThickness" Value="0 1 0 0"/>
-                                            <Setter Target="Border.BorderThickness" Value="0 1 0 0"/>
+                                            <Setter Target="Root.BorderThickness" Value="0 0 0 1"/>
+                                            <Setter Target="Border.BorderThickness" Value="0 0 0 1"/>
                                         </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
@@ -94,6 +95,7 @@
         </Grid.ColumnDefinitions>
 
         <ListView Grid.Column="0" ItemsSource="{Binding Mails}"
+                  BorderThickness="0 1 0 0" BorderBrush="{StaticResource Brush.ListBorder}"
                   ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:MailGroupViewModel">
@@ -124,6 +126,11 @@
                               FallbackColor="#E7E8EC" />
             </ListView.Background>
         </ListView>
+        <Rectangle Grid.Column="0" Height="1" VerticalAlignment="Top">
+            <Rectangle.Fill>
+                <RevealBorderBrush />
+            </Rectangle.Fill>
+        </Rectangle>
 
         <WebView Grid.Column="1" />
     </Grid>
