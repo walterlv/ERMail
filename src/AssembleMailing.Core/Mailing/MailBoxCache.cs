@@ -89,8 +89,8 @@ namespace Walterlv.AssembleMailing.Mailing
                         Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
                         Topic = summary.Envelope.Subject,
                         Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
+                        MailIds = new List<uint> {summary.UniqueId.Id},
                     };
-                    mailGroup.MailIds.Add(summary.UniqueId.Id);
                     result.Add(mailGroup);
                 }
             }
