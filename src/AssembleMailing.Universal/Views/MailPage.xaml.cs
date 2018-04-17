@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -80,10 +81,9 @@ namespace Walterlv.AssembleMailing.Views
             if (!(e.AddedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
 
             var mailCache = await MailCache.LoadMailAsync(ViewModel.CurrentFolder, vm.MailIds.First());
-            if (!string.IsNullOrWhiteSpace(mailCache?.HtmlBody))
-            {
-                WebView.NavigateToString(mailCache.HtmlBody);
-            }
+            var file = await StorageFile.GetFileFromPathAsync(mailCache.HtmlFileName);
+            var text = await FileIO.ReadTextAsync(file);
+            WebView.NavigateToString(text);
         }
     }
 }

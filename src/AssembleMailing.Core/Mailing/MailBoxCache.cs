@@ -72,9 +72,9 @@ namespace Walterlv.AssembleMailing.Mailing
 
         public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder)
         {
-            var summaryCache = new FileSerializor<List<MailSummary>>(
+            var cache = new FileSerializor<List<MailSummary>>(
                 Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
-            var cachedSummary = await summaryCache.ReadAsync();
+            var cachedSummary = await cache.ReadAsync();
             if (cachedSummary.Any())
             {
                 return cachedSummary;
@@ -118,13 +118,24 @@ namespace Walterlv.AssembleMailing.Mailing
                 }
             }
 
-            summaryCache.Save(result);
+            cache.Save(result);
 
             return result;
         }
 
         public async Task<MailContentCache> LoadMailAsync(MailBoxFolder folder, uint id)
         {
+            var htmlFileName = Path.Combine(Directory, "Mails", $"{id}.html");
+            var contentfileName = Path.Combine(Directory, "Mails", $"{id}.json");
+            var cache = new FileSerializor<MailContentCache>(contentfileName);
+
+            var contentCache = await cache.ReadAsync();
+            if (contentCache.Content != null && File.Exists(contentCache.HtmlFileName))
+            {
+                return contentCache;
+            }
+
+
             FillPassword(ConnectionInfo);
             using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
             {
@@ -133,7 +144,16 @@ namespace Walterlv.AssembleMailing.Mailing
 
                 var message = await mailFolder.GetMessageAsync(new UniqueId(id));
                 var htmlBody = message.HtmlBody;
-                return new MailContentCache(htmlBody);
+
+                var content = new MailContentCache
+                {
+                    Content = message.TextBody ?? htmlBody,
+                    HtmlFileName = htmlFileName,
+                };
+                await cache.SaveAsync(content);
+                File.WriteAllText(htmlFileName, htmlBody);
+
+                return content;
             }
         }
 

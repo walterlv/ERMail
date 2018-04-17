@@ -2,11 +2,8 @@
 {
     public class MailContentCache
     {
-        public string HtmlBody { get; }
+        public string Content { get; set; }
 
-        public MailContentCache(string htmlBody)
-        {
-            HtmlBody = htmlBody;
-        }
+        public string HtmlFileName { get; set; }
     }
 }
