@@ -58,7 +58,7 @@ namespace Walterlv.AssembleMailing.Views
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                message = $"[{DateTimeOffset.Now:T}] [{callerName}] {message}";
+                message = $"[{DateTimeOffset.Now:T}] {message}";
                 Logs.Add(message);
             });
         }

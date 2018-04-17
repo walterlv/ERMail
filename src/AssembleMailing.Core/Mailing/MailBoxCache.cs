@@ -2,6 +2,7 @@
 using System.Collections.Async;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -167,26 +168,37 @@ namespace Walterlv.AssembleMailing.Mailing
         {
             return new AsyncEnumerable<MailContentCache>(async yield =>
             {
-                var startIndex = 0;
-                while (true)
+                try
                 {
-                    var summaries = await LoadMailsAsync(folder, startIndex, startIndex + 20);
-                    var finished = true;
-                    foreach (var summary in summaries)
+                    var startIndex = 0;
+                    while (true)
                     {
-                        finished = false;
-                        var contentCache = await LoadMailAsync(folder, summary.MailIds.First());
-                        await yield.ReturnAsync(contentCache);
+                        var summaries = await LoadMailsAsync(folder, startIndex, startIndex + 20);
+                        var finished = true;
+                        foreach (var summary in summaries)
+                        {
+                            finished = false;
+                            var contentCache = await LoadMailAsync(folder, summary.MailIds.First());
+                            await yield.ReturnAsync(contentCache);
+                        }
+
+                        startIndex += 20;
+
+                        if (finished)
+                        {
+                            break;
+                        }
                     }
-
-                    startIndex += 20;
-
-                    if (finished)
+                    yield.Break();
+                }
+                catch (Exception ex)
+                {
+                    yield.Break();
+                    if (Debugger.IsAttached)
                     {
-                        break;
+                        Debugger.Break();
                     }
                 }
-                yield.Break();
             });
         }
 
