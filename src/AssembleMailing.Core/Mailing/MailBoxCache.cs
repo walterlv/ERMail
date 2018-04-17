@@ -1,10 +1,13 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MailKit;
+using MimeKit;
 using Walterlv.AssembleMailing.Models;
+using Walterlv.AssembleMailing.ViewModels;
 
 namespace Walterlv.AssembleMailing.Mailing
 {
@@ -58,9 +61,62 @@ namespace Walterlv.AssembleMailing.Mailing
             return result;
         }
 
-        public async Task LoadMailAsync()
+        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder)
         {
+            FillPassword(ConnectionInfo);
+            var result = new List<MailSummary>();
+            using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
+            {
+                var mailFolder = await client.GetFolderAsync(folder.FullName);
+                mailFolder.Open(FolderAccess.ReadOnly);
 
+                var messageSummaries = await mailFolder.FetchAsync(mailFolder.Count - 20, mailFolder.Count - 1,
+                    MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
+                foreach (var summary in messageSummaries.Reverse())
+                {
+                    TextPart body;
+                    try
+                    {
+                        body = (TextPart) await mailFolder.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Temporarily catch all exceptions, and it will be handled correctly after main project is about to finish.
+                        body = null;
+                    }
+
+                    var mailGroup = new MailSummary
+                    {
+                        Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
+                        Topic = summary.Envelope.Subject,
+                        Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
+                    };
+                    mailGroup.MailIds.Add(summary.UniqueId.Id);
+                    result.Add(mailGroup);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<MailContentCache> LoadMailAsync(uint id)
+        {
+            FillPassword(ConnectionInfo);
+            using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
+            {
+                client.Inbox.Open(FolderAccess.ReadOnly);
+                try
+                {
+                    var message = await client.Inbox.GetMessageAsync(new UniqueId(id));
+                    var htmlBody = message.HtmlBody;
+                    return new MailContentCache(htmlBody);
+                }
+                catch (Exception ex)
+                {
+                    // Temporarily catch all exceptions, and it will be handled correctly after main project is about to finish.
+                    return null;
+                }
+            }
         }
 
         private void FillPassword(MailBoxConnectionInfo info)

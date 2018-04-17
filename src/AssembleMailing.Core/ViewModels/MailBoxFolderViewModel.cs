@@ -92,6 +92,15 @@ namespace Walterlv.AssembleMailing.ViewModels
             };
         }
 
+        public static implicit operator MailBoxFolder(MailBoxFolderViewModel source)
+        {
+            return new MailBoxFolder
+            {
+                Name = source.Name,
+                FullName = source.FullName,
+            };
+        }
+
         [ContractPublicPropertyName(nameof(Name))]
         private string _name;
 
