@@ -53,6 +53,9 @@ namespace Walterlv.AssembleMailing.Views
                 {
                     ViewModel.Folders.Add(folder);
                 }
+
+                var inbox = ViewModel.Folders.FirstOrDefault(x=>x.FullName == "INBOX");
+                MailFolderComboBox.SelectedItem = inbox;
             }
         }
 
