@@ -37,7 +37,7 @@ namespace Walterlv.AssembleMailing.Utils
         private T Read()
         {
             var json = JsonSerializer.Create();
-            using (var file = File.OpenRead(FileName))
+            using (var file = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.Write))
             using (TextReader reader = new StreamReader(file))
             {
                 return json.Deserialize<T>(new JsonTextReader(reader));
@@ -52,7 +52,12 @@ namespace Walterlv.AssembleMailing.Utils
         internal void Save(T target)
         {
             var json = JsonSerializer.Create();
-            using (var file = File.OpenWrite(FileName))
+            var directory = new FileInfo(FileName).Directory;
+            if (directory?.Exists is false)
+            {
+                directory.Create();
+            }
+            using (var file = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
             using (TextWriter writer = new StreamWriter(file))
             {
                 json.Serialize(writer, target);
