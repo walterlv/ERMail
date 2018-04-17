@@ -72,13 +72,13 @@ namespace Walterlv.AssembleMailing.Mailing
             return result;
         }
 
-        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 20)
+        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 100)
         {
             var cache = new FileSerializor<List<MailSummary>>(
                 Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
             if (start == 0)
             {
-                // Temporarily load cache only for first 20.
+                // Temporarily load cache only for first 100.
                 var cachedSummary = await cache.ReadAsync();
                 if (cachedSummary.Any())
                 {
