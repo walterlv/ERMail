@@ -72,7 +72,8 @@ namespace Walterlv.AssembleMailing.Mailing
 
         public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder)
         {
-            var summaryCache = new FileSerializor<List<MailSummary>>(Path.Combine(Directory, "summaries.json"));
+            var summaryCache = new FileSerializor<List<MailSummary>>(
+                Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
             var cachedSummary = await summaryCache.ReadAsync();
             if (cachedSummary.Any())
             {
@@ -86,29 +87,34 @@ namespace Walterlv.AssembleMailing.Mailing
                 var mailFolder = await client.GetFolderAsync(folder.FullName);
                 mailFolder.Open(FolderAccess.ReadOnly);
 
-                var messageSummaries = await mailFolder.FetchAsync(mailFolder.Count - 20, mailFolder.Count - 1,
-                    MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
-                foreach (var summary in messageSummaries.Reverse())
+                var fetchingCount = mailFolder.Count < 20 ? mailFolder.Count : 20;
+                if (fetchingCount > 0)
                 {
-                    TextPart body;
-                    try
+                    var messageSummaries = await mailFolder.FetchAsync(mailFolder.Count - fetchingCount,
+                        mailFolder.Count - 1,
+                        MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
+                    foreach (var summary in messageSummaries.Reverse())
                     {
-                        body = (TextPart) await mailFolder.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Temporarily catch all exceptions, and it will be handled correctly after main project is about to finish.
-                        body = null;
-                    }
+                        TextPart body;
+                        try
+                        {
+                            body = (TextPart) await mailFolder.GetBodyPartAsync(summary.UniqueId, summary.TextBody);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Temporarily catch all exceptions, and it will be handled correctly after main project is about to finish.
+                            body = null;
+                        }
 
-                    var mailGroup = new MailSummary
-                    {
-                        Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
-                        Topic = summary.Envelope.Subject,
-                        Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
-                        MailIds = new List<uint> {summary.UniqueId.Id},
-                    };
-                    result.Add(mailGroup);
+                        var mailGroup = new MailSummary
+                        {
+                            Title = summary.Envelope.From.Select(x => x.Name).FirstOrDefault() ?? "(Anonymous)",
+                            Topic = summary.Envelope.Subject,
+                            Excerpt = body?.Text?.Replace(Environment.NewLine, " "),
+                            MailIds = new List<uint> {summary.UniqueId.Id},
+                        };
+                        result.Add(mailGroup);
+                    }
                 }
             }
 
