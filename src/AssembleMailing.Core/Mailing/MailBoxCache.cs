@@ -152,6 +152,7 @@ namespace Walterlv.AssembleMailing.Mailing
 
                 var content = new MailContentCache
                 {
+                    Topic = message.Subject,
                     Content = message.TextBody ?? htmlBody,
                     HtmlFileName = htmlFileName,
                 };

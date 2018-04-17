@@ -47,7 +47,8 @@ namespace Walterlv.AssembleMailing.Views
                 var current = await mailCache.LoadMailAsync(folder, group.MailIds.First());
                 var mails = mailCache.EnumerateMailsAsync(folder);
 
-                await new NaiveBayesClassifier(this).RunAsync(current.Content, mails.Select(x => x.Content));
+                await new NaiveBayesClassifier(this).RunAsync($"{current.Topic}{Environment.NewLine}{current.Content}",
+                    mails.Select(x => $"{x.Topic}{Environment.NewLine}{x.Content}"));
             }
         }
 
