@@ -6,7 +6,6 @@ using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
 using Walterlv.AssembleMailing.Utils;
 using Walterlv.AssembleMailing.ViewModels;
@@ -20,11 +19,11 @@ namespace Walterlv.AssembleMailing.Views
             InitializeComponent();
 
             var localFolder = ApplicationData.Current.LocalFolder;
-            _configurationFile = new MailBoxConfigurationFile(
+            _configurationFile = new FileSerializor<MailBoxConfiguration>(
                 Path.Combine(localFolder.Path, "MailBoxConfiguration.json"));
         }
 
-        private readonly MailBoxConfigurationFile _configurationFile;
+        private readonly FileSerializor<MailBoxConfiguration> _configurationFile;
 
         private MainViewModel ViewModel => (MainViewModel) DataContext;
 
