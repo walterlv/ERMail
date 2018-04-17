@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using MailKit;
 using MimeKit;
 using Walterlv.AssembleMailing.Models;
-using Walterlv.AssembleMailing.ViewModels;
 
 namespace Walterlv.AssembleMailing.Mailing
 {
