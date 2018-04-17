@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MailKit;
 using MimeKit;
 using Walterlv.AssembleMailing.Models;
+using Walterlv.AssembleMailing.Utils;
 
 namespace Walterlv.AssembleMailing.Mailing
 {
@@ -39,6 +40,13 @@ namespace Walterlv.AssembleMailing.Mailing
 
         public async Task<IList<MailBoxFolder>> LoadMailFoldersAsync()
         {
+            var folderCache = new FileSerializor<List<MailBoxFolder>>(Path.Combine(Directory, "folders.json"));
+            var cachedFolder = await folderCache.ReadAsync();
+            if (cachedFolder.Any())
+            {
+                return cachedFolder;
+            }
+
             FillPassword(ConnectionInfo);
             var result = new List<MailBoxFolder>();
             using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
@@ -57,11 +65,20 @@ namespace Walterlv.AssembleMailing.Mailing
                 }
             }
 
+            await folderCache.SaveAsync(result);
+
             return result;
         }
 
         public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder)
         {
+            var summaryCache = new FileSerializor<List<MailSummary>>(Path.Combine(Directory, "summaries.json"));
+            var cachedSummary = await summaryCache.ReadAsync();
+            if (cachedSummary.Any())
+            {
+                return cachedSummary;
+            }
+
             FillPassword(ConnectionInfo);
             var result = new List<MailSummary>();
             using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
@@ -94,6 +111,8 @@ namespace Walterlv.AssembleMailing.Mailing
                     result.Add(mailGroup);
                 }
             }
+
+            summaryCache.Save(result);
 
             return result;
         }
