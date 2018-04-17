@@ -14,10 +14,30 @@ namespace Walterlv.AssembleMailing.Views
         public MailPage()
         {
             InitializeComponent();
-            _localFolder = ApplicationData.Current.LocalFolder.Path;
         }
 
-        private readonly string _localFolder;
+        private MailBoxCache _mailCache;
+
+        private MailBoxCache MailCache
+        {
+            get => _mailCache;
+            set
+            {
+                if (Equals(_mailCache, value)) return;
+
+                if (_mailCache is MailBoxCache oldValue)
+                {
+                    // Unregister cache events.
+                }
+
+                _mailCache = value;
+
+                if (value != null)
+                {
+                    // Register cache events.
+                }
+            }
+        }
 
         public MailBoxViewModel ViewModel => (MailBoxViewModel) DataContext;
 
@@ -25,8 +45,9 @@ namespace Walterlv.AssembleMailing.Views
         {
             if (e.NewValue is MailBoxViewModel vm && vm.ConnectionInfo is MailBoxConnectionInfo info)
             {
-                var cache = MailBoxCache.Get(_localFolder, info, PasswordManager.Current);
-                var folders = await cache.LoadMailFoldersAsync();
+                var localFolder = ApplicationData.Current.LocalFolder.Path;
+                MailCache = MailBoxCache.Get(localFolder, info, PasswordManager.Current);
+                var folders = await MailCache.LoadMailFoldersAsync();
                 ViewModel.Folders.Clear();
                 foreach (var folder in folders)
                 {
@@ -41,8 +62,7 @@ namespace Walterlv.AssembleMailing.Views
             if (!(e.AddedItems.FirstOrDefault() is MailBoxFolderViewModel vm)) return;
 
             MailListView.DataContext = vm;
-            var cache = MailBoxCache.Get(_localFolder, ViewModel.ConnectionInfo, PasswordManager.Current);
-            var summaries = await cache.LoadMailsAsync(vm);
+            var summaries = await MailCache.LoadMailsAsync(vm);
             vm.Mails.Clear();
             foreach (var summary in summaries)
             {
@@ -55,9 +75,8 @@ namespace Walterlv.AssembleMailing.Views
             if (ViewModel.ConnectionInfo is null) return;
             if (!(e.AddedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
 
-            var cache = MailBoxCache.Get(_localFolder, ViewModel.ConnectionInfo, PasswordManager.Current);
-            var mailCache = await cache.LoadMailAsync(vm.MailIds.First());
-            if (!string.IsNullOrWhiteSpace(mailCache.HtmlBody))
+            var mailCache = await MailCache.LoadMailAsync(vm.MailIds.First());
+            if (!string.IsNullOrWhiteSpace(mailCache?.HtmlBody))
             {
                 WebView.NavigateToString(mailCache.HtmlBody);
             }
