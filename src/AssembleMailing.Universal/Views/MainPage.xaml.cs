@@ -65,14 +65,14 @@ namespace Walterlv.AssembleMailing.Views
             var connectionInfo = connections.FirstOrDefault(x => x.Address == address) ?? new MailBoxConnectionInfo();
             if (!string.IsNullOrWhiteSpace(connectionInfo.Address))
             {
-                connectionInfo.Password = PasswordManager.Retrieve(connectionInfo.Address);
+                connectionInfo.Password = PasswordManager.Current.Retrieve(connectionInfo.Address);
             }
 
             var config = new ConfigMailBoxDialog(connectionInfo);
             var result = await config.ShowAsync();
             if (result == ContentDialogResult.Secondary)
             {
-                PasswordManager.Add(connectionInfo.Address, connectionInfo.Password);
+                PasswordManager.Current.Add(connectionInfo.Address, connectionInfo.Password);
 
                 connections.Clear();
                 connections.Add(connectionInfo);

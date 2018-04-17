@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using ReactiveUI;
+using Walterlv.AssembleMailing.Models;
 
 namespace Walterlv.AssembleMailing.ViewModels
 {
@@ -81,6 +82,15 @@ namespace Walterlv.AssembleMailing.ViewModels
                 Excerpt = "Setting Hello, walterlv! Your Domain Migration task is completed.",
             },
         };
+
+        public static implicit operator MailBoxFolderViewModel(MailBoxFolder source)
+        {
+            return new MailBoxFolderViewModel
+            {
+                Name = source.Name,
+                FullName = source.FullName,
+            };
+        }
 
         [ContractPublicPropertyName(nameof(Name))]
         private string _name;

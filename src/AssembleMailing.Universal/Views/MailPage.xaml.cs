@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using MailKit;
@@ -16,8 +17,11 @@ namespace Walterlv.AssembleMailing.Views
     {
         public MailPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            _localFolder = ApplicationData.Current.LocalFolder.Path;
         }
+
+        private readonly string _localFolder;
 
         public MailBoxViewModel ViewModel => (MailBoxViewModel) DataContext;
 
@@ -25,7 +29,13 @@ namespace Walterlv.AssembleMailing.Views
         {
             if (e.NewValue is MailBoxViewModel vm && vm.ConnectionInfo is MailBoxConnectionInfo info)
             {
-                await FetchFoldersAsync(info, vm);
+                var cache = MailBoxCache.Get(_localFolder, info, PasswordManager.Current);
+                var folders = await cache.LoadMailFoldersAsync();
+                ViewModel.Folders.Clear();
+                foreach (var folder in folders)
+                {
+                    ViewModel.Folders.Add(folder);
+                }
             }
         }
 
@@ -47,34 +57,6 @@ namespace Walterlv.AssembleMailing.Views
             if (!string.IsNullOrWhiteSpace(body))
             {
                 WebView.NavigateToString(body);
-            }
-        }
-
-        private static async Task FetchFoldersAsync(MailBoxConnectionInfo info, MailBoxViewModel viewModel)
-        {
-            if (string.IsNullOrEmpty(info.Password))
-            {
-                FillPassword(info);
-            }
-
-            viewModel.Folders.Clear();
-            using (var client = await new IncomingMailClient(info).ConnectAsync())
-            {
-                var inbox = client.Inbox;
-                inbox.Open(FolderAccess.ReadOnly);
-
-                var folders = await client.GetFoldersAsync(client.PersonalNamespaces[0]);
-                foreach (var folder in new[] {inbox}.Union(folders))
-                {
-                    viewModel.Folders.Add(new MailBoxFolderViewModel
-                    {
-                        Name = folder.Name,
-                        Separator = folder.DirectorySeparator,
-                        FullName = folder.FullName,
-                    });
-                }
-
-                viewModel.CurrentFolder = viewModel.Folders[0];
             }
         }
 
@@ -129,14 +111,6 @@ namespace Walterlv.AssembleMailing.Views
                 {
                     return null;
                 }
-            }
-        }
-
-        private static void FillPassword(MailBoxConnectionInfo info)
-        {
-            if (!string.IsNullOrWhiteSpace(info.Address))
-            {
-                info.Password = PasswordManager.Retrieve(info.Address);
             }
         }
     }
