@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using MailKit;
-using MailKit.Net.Imap;
 using MimeKit;
 using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
@@ -44,18 +43,10 @@ namespace Walterlv.AssembleMailing.Views
             if (ViewModel.ConnectionInfo is null) return;
             if (!(e.AddedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
 
-            using (var client = await new IncomingMailClient(ViewModel.ConnectionInfo).ConnectAsync())
+            var body = await DownloadMailAsync(ViewModel.ConnectionInfo, vm);
+            if (!string.IsNullOrWhiteSpace(body))
             {
-                client.Inbox.Open(FolderAccess.ReadOnly);
-                try
-                {
-                    var message = await client.Inbox.GetMessageAsync(new UniqueId(vm.MailIds.First()));
-                    var htmlBody = message.HtmlBody;
-                    WebView.NavigateToString(htmlBody);
-                }
-                catch (Exception ex)
-                {
-                }
+                WebView.NavigateToString(body);
             }
         }
 
@@ -120,6 +111,24 @@ namespace Walterlv.AssembleMailing.Views
                 }
 
                 viewModel.Mails.Add(new MailGroupViewModel());
+            }
+        }
+
+        private static async Task<string> DownloadMailAsync(MailBoxConnectionInfo info, MailGroupViewModel mailGroupViewModel)
+        {
+            using (var client = await new IncomingMailClient(info).ConnectAsync())
+            {
+                client.Inbox.Open(FolderAccess.ReadOnly);
+                try
+                {
+                    var message = await client.Inbox.GetMessageAsync(new UniqueId(mailGroupViewModel.MailIds.First()));
+                    var htmlBody = message.HtmlBody;
+                    return htmlBody;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
         }
 
