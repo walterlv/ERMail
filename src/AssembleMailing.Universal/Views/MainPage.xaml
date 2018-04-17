@@ -123,10 +123,6 @@
         </Grid>
 
         <!-- Mail details -->
-        <Frame Grid.Row="1" DataContext="{Binding CurrentMailBox}">
-            <Frame.Content>
-                <local:MailPage x:Name="MailPage" />
-            </Frame.Content>
-        </Frame>
+        <Frame x:Name="DetailFrame" Grid.Row="1" DataContext="{Binding CurrentMailBox}" />
     </Grid>
 </Page>

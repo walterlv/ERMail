@@ -3,6 +3,7 @@ using System.Linq;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using Walterlv.AssembleMailing.Mailing;
 using Walterlv.AssembleMailing.Models;
 using Walterlv.AssembleMailing.Utils;
@@ -84,6 +85,12 @@ namespace Walterlv.AssembleMailing.Views
             var file = await StorageFile.GetFileFromPathAsync(mailCache.HtmlFileName);
             var text = await FileIO.ReadTextAsync(file);
             WebView.NavigateToString(text);
+        }
+
+        private void AssembleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(MailListView.SelectedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
+            Frame.Navigate(typeof(ClassificationPage), vm, new SlideNavigationTransitionInfo());
         }
     }
 }

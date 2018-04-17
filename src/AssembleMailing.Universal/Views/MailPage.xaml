@@ -159,7 +159,11 @@
 
         <CommandBar Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom"
                     Background="{ThemeResource SystemControlAcrylicElementBrush}" >
-            <AppBarButton />
+            <AppBarButton Label="聚合此类邮件" Click="AssembleButton_Click">
+                <AppBarButton.Icon>
+                    <SymbolIcon Symbol="Target" />
+                </AppBarButton.Icon>
+            </AppBarButton>
             <CommandBar.SecondaryCommands>
                 <AppBarButton />
             </CommandBar.SecondaryCommands>

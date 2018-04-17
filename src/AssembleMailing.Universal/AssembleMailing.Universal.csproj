@@ -97,6 +97,9 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\PasswordManager.cs" />
+    <Compile Include="Views\ClassificationPage.xaml.cs">
+      <DependentUpon>ClassificationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ConfigMailBoxDialog.xaml.cs">
       <DependentUpon>ConfigMailBoxDialog.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\ClassificationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ConfigMailBoxDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

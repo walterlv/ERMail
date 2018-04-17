@@ -43,6 +43,8 @@ namespace Walterlv.AssembleMailing.Views
             ViewModel.MailBoxes.Insert(0, mailBox);
             MailBoxListView.SelectedIndex = 0;
             ViewModel.CurrentMailBox = mailBox;
+
+            DetailFrame.Navigate(typeof(MailPage));
         }
 
         private async void ConfigButton_Click(object sender, RoutedEventArgs e)
