@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Async;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -70,14 +71,18 @@ namespace Walterlv.AssembleMailing.Mailing
             return result;
         }
 
-        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder)
+        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 20)
         {
             var cache = new FileSerializor<List<MailSummary>>(
                 Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
-            var cachedSummary = await cache.ReadAsync();
-            if (cachedSummary.Any())
+            if (start == 0)
             {
-                return cachedSummary;
+                // Temporarily load cache only for first 20.
+                var cachedSummary = await cache.ReadAsync();
+                if (cachedSummary.Any())
+                {
+                    return cachedSummary;
+                }
             }
 
             FillPassword(ConnectionInfo);
@@ -87,11 +92,11 @@ namespace Walterlv.AssembleMailing.Mailing
                 var mailFolder = await client.GetFolderAsync(folder.FullName);
                 mailFolder.Open(FolderAccess.ReadOnly);
 
-                var fetchingCount = mailFolder.Count < 20 ? mailFolder.Count : 20;
+                var fetchingCount = mailFolder.Count < start + length ? mailFolder.Count : start + length;
                 if (fetchingCount > 0)
                 {
                     var messageSummaries = await mailFolder.FetchAsync(mailFolder.Count - fetchingCount,
-                        mailFolder.Count - 1,
+                        mailFolder.Count - 1 - start,
                         MessageSummaryItems.UniqueId | MessageSummaryItems.Full);
                     foreach (var summary in messageSummaries.Reverse())
                     {
@@ -155,6 +160,33 @@ namespace Walterlv.AssembleMailing.Mailing
 
                 return content;
             }
+        }
+
+        public IAsyncEnumerable<MailContentCache> EnumerateMailsAsync(MailBoxFolder folder)
+        {
+            return new AsyncEnumerable<MailContentCache>(async yield =>
+            {
+                var startIndex = 0;
+                while (true)
+                {
+                    var summaries = await LoadMailsAsync(folder, startIndex, startIndex + 20);
+                    var finished = true;
+                    foreach (var summary in summaries)
+                    {
+                        finished = false;
+                        var contentCache = await LoadMailAsync(folder, summary.MailIds.First());
+                        await yield.ReturnAsync(contentCache);
+                    }
+
+                    startIndex += 20;
+
+                    if (finished)
+                    {
+                        break;
+                    }
+                }
+                yield.Break();
+            });
         }
 
         private void FillPassword(MailBoxConnectionInfo info)

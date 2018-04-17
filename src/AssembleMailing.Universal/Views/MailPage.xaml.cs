@@ -90,7 +90,9 @@ namespace Walterlv.AssembleMailing.Views
         private void AssembleButton_Click(object sender, RoutedEventArgs e)
         {
             if (!(MailListView.SelectedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
-            Frame.Navigate(typeof(ClassificationPage), vm, new SlideNavigationTransitionInfo());
+            Frame.Navigate(typeof(ClassificationPage),
+                (ViewModel.ConnectionInfo, ViewModel.CurrentFolder, vm),
+                new SlideNavigationTransitionInfo());
         }
     }
 }

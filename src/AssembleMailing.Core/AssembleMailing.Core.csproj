@@ -4,6 +4,7 @@
     <RootNamespace>Walterlv.AssembleMailing</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AsyncEnumerator" Version="2.1.1" />
     <PackageReference Include="MailKit" Version="2.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="ReactiveUI" Version="8.0.0-alpha0117" />
