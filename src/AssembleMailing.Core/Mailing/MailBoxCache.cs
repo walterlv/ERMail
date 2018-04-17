@@ -123,23 +123,17 @@ namespace Walterlv.AssembleMailing.Mailing
             return result;
         }
 
-        public async Task<MailContentCache> LoadMailAsync(uint id)
+        public async Task<MailContentCache> LoadMailAsync(MailBoxFolder folder, uint id)
         {
             FillPassword(ConnectionInfo);
             using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
             {
-                client.Inbox.Open(FolderAccess.ReadOnly);
-                try
-                {
-                    var message = await client.Inbox.GetMessageAsync(new UniqueId(id));
-                    var htmlBody = message.HtmlBody;
-                    return new MailContentCache(htmlBody);
-                }
-                catch (Exception ex)
-                {
-                    // Temporarily catch all exceptions, and it will be handled correctly after main project is about to finish.
-                    return null;
-                }
+                var mailFolder = await client.GetFolderAsync(folder.FullName);
+                mailFolder.Open(FolderAccess.ReadOnly);
+
+                var message = await mailFolder.GetMessageAsync(new UniqueId(id));
+                var htmlBody = message.HtmlBody;
+                return new MailContentCache(htmlBody);
             }
         }
 

@@ -65,6 +65,7 @@ namespace Walterlv.AssembleMailing.Views
             if (!(e.AddedItems.FirstOrDefault() is MailBoxFolderViewModel vm)) return;
 
             MailListView.DataContext = vm;
+            ViewModel.CurrentFolder = vm;
             var summaries = await MailCache.LoadMailsAsync(vm);
             vm.Mails.Clear();
             foreach (var summary in summaries)
@@ -78,7 +79,7 @@ namespace Walterlv.AssembleMailing.Views
             if (ViewModel.ConnectionInfo is null) return;
             if (!(e.AddedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
 
-            var mailCache = await MailCache.LoadMailAsync(vm.MailIds.First());
+            var mailCache = await MailCache.LoadMailAsync(ViewModel.CurrentFolder, vm.MailIds.First());
             if (!string.IsNullOrWhiteSpace(mailCache?.HtmlBody))
             {
                 WebView.NavigateToString(mailCache.HtmlBody);
