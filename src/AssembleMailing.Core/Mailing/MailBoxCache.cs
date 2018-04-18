@@ -124,7 +124,7 @@ namespace Walterlv.AssembleMailing.Mailing
                 }
             }
 
-            cache.Save(result);
+            await cache.SaveAsync(result);
 
             return result;
         }

@@ -5,10 +5,21 @@ using Newtonsoft.Json;
 
 namespace Walterlv.AssembleMailing.Utils
 {
+    /// <summary>
+    /// Serialize or deserialize a class instance using json format.
+    /// </summary>
+    /// <typeparam name="T">The type which is preparing to serialize. It can be am IList.</typeparam>
     public class FileSerializor<T> where T : new()
     {
+        /// <summary>
+        /// Gets the serialization file name (full path).
+        /// </summary>
         public string FileName { get; }
 
+        /// <summary>
+        /// Initialize a new instance of <see cref="FileSerializor{T}"/>.
+        /// </summary>
+        /// <param name="fileName"></param>
         public FileSerializor(string fileName)
         {
             if (fileName == null)
@@ -24,6 +35,10 @@ namespace Walterlv.AssembleMailing.Utils
             FileName = fileName;
         }
 
+        /// <summary>
+        /// Read an instance from file. If the file does not exist, it will return a new one (with all fields default).
+        /// </summary>
+        /// <returns></returns>
         public async Task<T> ReadAsync()
         {
             if (!File.Exists(FileName))
@@ -44,12 +59,17 @@ namespace Walterlv.AssembleMailing.Utils
             }
         }
 
+        /// <summary>
+        /// Save the target object into a file. If the file does not exists, a new one will be created.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public Task SaveAsync(T target)
         {
             return Task.Run(() => Save(target));
         }
 
-        internal void Save(T target)
+        private void Save(T target)
         {
             var json = JsonSerializer.Create();
             var directory = new FileInfo(FileName).Directory;
