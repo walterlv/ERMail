@@ -68,7 +68,7 @@ This is a project mostly for studying and experimenting new technology we're lea
     - [ ] prepare UI assets for UWP
     - [ ] prepare UI assets for Avalonia
     - [ ] improve stability
-1. *Introduce other black technology*
+1. *Introduce some other black technology*
 1. *Analysis feedback data and improve them*
 
 ## Preview of the UI
