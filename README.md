@@ -31,9 +31,9 @@ Assemble Mailing is an e-mail client that can help you to assemble related email
     - C# 7.2
     - NuGet (4.3 or later)
 - UWP (C#) Windows SDK 10.0.16299.0
-    - To build AssembleMailing.Universal
+    - for building AssembleMailing.Universal
 - [Avalonia](https://github.com/AvaloniaUI/Avalonia) [Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.AvaloniaforVisualStudio)
-    - To design AssembleMailing.Desktop
+    - for designing AssembleMailing.Desktop
 
 ### Project structure
 
