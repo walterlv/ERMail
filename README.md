@@ -35,6 +35,15 @@ Assemble Mailing is an e-mail client that can help you to assemble related email
 - [Avalonia](https://github.com/AvaloniaUI/Avalonia) [Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.AvaloniaforVisualStudio)
     - for designing AssembleMailing.Desktop
 
+### Build and run
+
+1. Ensure that your Windows device has developer mode enabled.
+    - Goto Settings -> Update & Security -> For developers -> Developer mode
+1. Switch your startup project from `AssembleMailing.Desktop` to `AssembleMailing.Universal`
+    - It's not necessary if you'll contribute to Avalonia version.
+1. Make sure your target device is `Local Machine` not a `Simulator`.
+    - Goto project properties -> Debug -> Local Machine.
+
 ### Project structure
 
 + **.vscode** *If you debug this project using VSCode, this folder contains the build info and debug info.*
