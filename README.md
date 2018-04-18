@@ -42,7 +42,7 @@ Assemble Mailing is an e-mail client that can help you to assemble related email
     - **assets** *Images or other assets that is used by the documentation.*
 + **src** *The main source code.*
     - **AssembleMailing.Core** *The main logical of this project. All the code here is cross-platform.*
-    - **AssembleMailing.Desktop** *The startup project targeting Avalonia UI Framework so that it might be cross-platform.*
+    - **AssembleMailing.Desktop** *The startup project targeting Avalonia UI Framework so that it could be cross-platform.*
     - **AssembleMailing.Universal** *Windows 10 Specified startup project (UWP).*
     - You can add your own UI Framework here, but it should support .NET Standard 2.0.
 
