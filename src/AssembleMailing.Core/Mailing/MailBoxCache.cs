@@ -13,11 +13,26 @@ using Walterlv.AssembleMailing.Utils;
 
 namespace Walterlv.AssembleMailing.Mailing
 {
+    /// <summary>
+    /// Manage the cache of all mail data.
+    /// It also fetch data from the mail server, so that it can determine when to update the cache.
+    /// </summary>
     public class MailBoxCache
     {
+        /// <summary>
+        /// Stores all cache manager indexed by mail address.
+        /// </summary>
         private static readonly ConcurrentDictionary<string, MailBoxCache> AllCache
             = new ConcurrentDictionary<string, MailBoxCache>();
 
+        /// <summary>
+        /// Gets a <see cref="MailBoxCache"/> instance that is auto managed.
+        /// Returns value will never be null.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="info"></param>
+        /// <param name="passwordManager"></param>
+        /// <returns></returns>
         public static MailBoxCache Get(string directory, MailBoxConnectionInfo info, IPasswordManager passwordManager)
         {
             if (!AllCache.TryGetValue(info.Address, out var cache))
@@ -29,17 +44,31 @@ namespace Walterlv.AssembleMailing.Mailing
             return cache;
         }
 
+        /// <summary>
+        /// Initialize a new instance of <see cref="MailBoxCache"/>.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="info"></param>
+        /// <param name="passwordManager"></param>
         public MailBoxCache(string directory, MailBoxConnectionInfo info, IPasswordManager passwordManager)
         {
             Directory = directory;
-            ConnectionInfo = info;
+            _connectionInfo = info;
             _passwordManager = passwordManager;
         }
 
+        /// <summary>
+        /// Gets the directory where this cache manager should store files in.
+        /// If it is auto managed, the directory is named like user@example.com.
+        /// </summary>
         public string Directory { get; }
 
-        public MailBoxConnectionInfo ConnectionInfo { get; }
-
+        /// <summary>
+        /// Load all folders of current mail cache.
+        /// If any cache exists, it will return the cache and then **TODO** fetch them from the mail server later.
+        /// If the cache does not exists, it will **TODO** return an empty result and then fetch all from the mail server.
+        /// </summary>
+        /// <returns></returns>
         public async Task<IList<MailBoxFolder>> LoadMailFoldersAsync()
         {
             var folderCache = new FileSerializor<List<MailBoxFolder>>(Path.Combine(Directory, "folders.json"));
@@ -49,9 +78,9 @@ namespace Walterlv.AssembleMailing.Mailing
                 return cachedFolder;
             }
 
-            FillPassword(ConnectionInfo);
+            FillPassword(_connectionInfo);
             var result = new List<MailBoxFolder>();
-            using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
+            using (var client = await new IncomingMailClient(_connectionInfo).ConnectAsync())
             {
                 var inbox = client.Inbox;
                 inbox.Open(FolderAccess.ReadOnly);
@@ -72,6 +101,15 @@ namespace Walterlv.AssembleMailing.Mailing
             return result;
         }
 
+        /// <summary>
+        /// Load a range of mail summaries from a specified mail folder cache.
+        /// If any cache exists, it will return the cache and then **TODO** fetch them from the mail server later.
+        /// If the cache does not exists, it will **TODO** return an empty result and then fetch all from the mail server.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 100)
         {
             var cache = new FileSerializor<List<MailSummary>>(
@@ -86,9 +124,9 @@ namespace Walterlv.AssembleMailing.Mailing
                 }
             }
 
-            FillPassword(ConnectionInfo);
+            FillPassword(_connectionInfo);
             var result = new List<MailSummary>();
-            using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
+            using (var client = await new IncomingMailClient(_connectionInfo).ConnectAsync())
             {
                 var mailFolder = await client.GetFolderAsync(folder.FullName);
                 mailFolder.Open(FolderAccess.ReadOnly);
@@ -129,6 +167,14 @@ namespace Walterlv.AssembleMailing.Mailing
             return result;
         }
 
+        /// <summary>
+        /// Load a mail content from a specified mail folder cache.
+        /// If any cache exists, it will return the cache.
+        /// But if it does not exists, it will fetch one from the mail server (and then cache it).
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<MailContentCache> LoadMailAsync(MailBoxFolder folder, uint id)
         {
             var htmlFileName = Path.Combine(Directory, "Mails", $"{id}.html");
@@ -142,8 +188,8 @@ namespace Walterlv.AssembleMailing.Mailing
             }
 
 
-            FillPassword(ConnectionInfo);
-            using (var client = await new IncomingMailClient(ConnectionInfo).ConnectAsync())
+            FillPassword(_connectionInfo);
+            using (var client = await new IncomingMailClient(_connectionInfo).ConnectAsync())
             {
                 var mailFolder = await client.GetFolderAsync(folder.FullName);
                 mailFolder.Open(FolderAccess.ReadOnly);
@@ -164,6 +210,11 @@ namespace Walterlv.AssembleMailing.Mailing
             }
         }
 
+        /// <summary>
+        /// Enumerate all mail contents asynchronously from the specified folder via the cache strategy.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
         public IAsyncEnumerable<MailContentCache> EnumerateMailsAsync(MailBoxFolder folder)
         {
             return new AsyncEnumerable<MailContentCache>(async yield =>
@@ -211,5 +262,6 @@ namespace Walterlv.AssembleMailing.Mailing
         }
 
         private readonly IPasswordManager _passwordManager;
+        private readonly MailBoxConnectionInfo _connectionInfo;
     }
 }
