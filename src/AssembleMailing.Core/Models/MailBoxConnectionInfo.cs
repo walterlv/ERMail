@@ -5,6 +5,10 @@ using Newtonsoft.Json;
 
 namespace Walterlv.AssembleMailing.Models
 {
+    /// <summary>
+    /// Stores connection information of a specified mail box.
+    /// This is a model that will be serialized into a file.
+    /// </summary>
     public class MailBoxConnectionInfo
     {
         public string Address
