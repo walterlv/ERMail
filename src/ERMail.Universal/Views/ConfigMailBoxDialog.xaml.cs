@@ -56,8 +56,8 @@ namespace Walterlv.ERMail.Views
 
         private void AddressTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            var parts = ConnectionInfo.Address.Split(new[] {'@'}, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length != 2) return;
+            var parts = ConnectionInfo.Address?.Split(new[] {'@'}, StringSplitOptions.RemoveEmptyEntries);
+            if (!(parts?.Length is 2)) return;
 
             var mailHost = $"@{parts[1]}";
 
