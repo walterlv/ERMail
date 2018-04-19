@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -8,7 +9,7 @@ namespace Walterlv.ERMail.OAuth
     /// <summary>
     /// Define some types of permissions that OAuth called Scope.
     /// </summary>
-    public class Scope : IEquatable<Scope>
+    public class Scope : IEquatable<Scope>, IEnumerable<string>
     {
         /// <summary>
         /// Indicate that this is an invalid scope.
@@ -93,6 +94,14 @@ namespace Walterlv.ERMail.OAuth
             return true;
         }
 
+        public IEnumerator<string> GetEnumerator()
+        {
+            foreach (var scope in _scopes)
+            {
+                yield return scope;
+            }
+        }
+
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
@@ -118,6 +127,11 @@ namespace Walterlv.ERMail.OAuth
         public override string ToString()
         {
             return string.Join(" ", _scopes.OrderBy(x => x));
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public static bool operator ==(Scope scope1, Scope scope2)
@@ -194,6 +208,16 @@ namespace Walterlv.ERMail.OAuth
         public static implicit operator Scope(string scope)
         {
             return new Scope(scope);
+        }
+
+        public static implicit operator Scope(string[] scope)
+        {
+            return new Scope(scope);
+        }
+
+        public static implicit operator string[](Scope scope)
+        {
+            return scope._scopes.ToArray();
         }
     }
 }
