@@ -6,9 +6,9 @@
 [zh-chs]: /README.zh-chs.md
 [zh-cht]: /README.zh-cht.md
 
-# Assemble Mailing
+# ER Mail
 
-Assemble Mailing is an e-mail client that can help you to assemble related emails into an aggregated view so that there is no need for you to click open them one by one.
+ER Mail is an e-mail client that can help you to assemble related emails into an aggregated view so that there is no need for you to click open them one by one.
 
 ## Getting started
 
@@ -31,15 +31,15 @@ Assemble Mailing is an e-mail client that can help you to assemble related email
     - C# 7.2
     - NuGet (4.3 or later)
 - UWP (C#) Windows SDK 10.0.16299.0
-    - for building AssembleMailing.Universal
+    - for building ERMail.Universal
 - [Avalonia](https://github.com/AvaloniaUI/Avalonia) [Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=AvaloniaTeam.AvaloniaforVisualStudio)
-    - for designing AssembleMailing.Desktop
+    - for designing ERMail.Desktop
 
 ### Build and run
 
 1. Ensure that your Windows device has developer mode enabled.
     - Goto Settings -> Update & Security -> For developers -> Developer mode
-1. Switch your startup project from `AssembleMailing.Desktop` to `AssembleMailing.Universal`
+1. Switch your startup project from `ERMail.Desktop` to `ERMail.Universal`
     - It's not necessary if you'll contribute to Avalonia version.
 1. Make sure your target device is `Local Machine` not a `Simulator`.
     - Goto project properties -> Debug -> Local Machine.
@@ -50,9 +50,9 @@ Assemble Mailing is an e-mail client that can help you to assemble related email
 + **docs** *Stores documentation of this project.*
     - **assets** *Images or other assets that is used by the documentation.*
 + **src** *The main source code.*
-    - **AssembleMailing.Core** *The main logic of this project. All the code here is cross-platform.*
-    - **AssembleMailing.Desktop** *The startup project targeting Avalonia UI Framework so that it could be cross-platform.*
-    - **AssembleMailing.Universal** *Windows 10 Specified startup project (UWP).*
+    - **ERMail.Core** *The main logic of this project. All the code here is cross-platform.*
+    - **ERMail.Desktop** *The startup project targeting Avalonia UI Framework so that it could be cross-platform.*
+    - **ERMail.Universal** *Windows 10 Specified startup project (UWP).*
     - You can add your own UI Framework here, but it should support .NET Standard 2.0.
 
 ### Roadmap

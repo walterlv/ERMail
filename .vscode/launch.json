@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/AssembleMailing.Desktop/bin/Debug/netcoreapp2.0/AssembleMailing.dll",
+            "program": "${workspaceFolder}/src/ERMail.Desktop/bin/Debug/netcoreapp2.0/ERMail.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/AssembleMailing.Desktop",
+            "cwd": "${workspaceFolder}/src/ERMail.Desktop",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,
