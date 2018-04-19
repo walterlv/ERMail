@@ -1,4 +1,6 @@
-﻿namespace Walterlv.ERMail.OAuth
+﻿using System;
+
+namespace Walterlv.ERMail.OAuth
 {
     /// <summary>
     /// Stores OAuth info of outlook.com.
@@ -12,11 +14,15 @@
 
         public Scope Scope { get; } = "openid profile email";
 
-        public string MakeUrl()
+        public string ResponseType { get; } = "code";
+
+        public Uri MakeUrl()
         {
-            return $@"https://login.microsoftonline.com/{Tenant}/oauth2/v2.0/authorize
+            var uri = new Uri($@"https://login.microsoftonline.com/{Tenant}/oauth2/v2.0/authorize
 ?client_id={ClientId}
-&scope={Scope}";
+&&response_type={ResponseType}
+&scope={Scope}");
+            return uri;
         }
     }
 }

@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using System.Web;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using MailKit.Security;
+using RestSharp;
+using RestSharp.Authenticators;
 using Walterlv.ERMail.Mailing;
 using Walterlv.ERMail.Models;
 using Walterlv.ERMail.OAuth;
@@ -62,11 +67,10 @@ namespace Walterlv.ERMail.Views
 
             var mailHost = $"@{parts[1]}";
 
-            if (OAuthDictionary.TryGetValue(mailHost, out var oauth))
-            {
-                WebView.Visibility = Visibility.Visible;
-                WebView.Navigate(new Uri(oauth.MakeUrl()));
-            }
+            if (!OAuthDictionary.TryGetValue(mailHost, out var oauth)) return;
+
+            WebView.Visibility = Visibility.Visible;
+            WebView.Navigate(oauth.MakeUrl());
         }
 
         private static readonly Dictionary<string, IOAuthInfo> OAuthDictionary = new Dictionary<string, IOAuthInfo>
