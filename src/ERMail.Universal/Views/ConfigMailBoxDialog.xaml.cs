@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Data;
 using MailKit.Security;
 using Walterlv.ERMail.Mailing;
 using Walterlv.ERMail.Models;
+using Walterlv.ERMail.OAuth;
 
 namespace Walterlv.ERMail.Views
 {
@@ -61,16 +62,16 @@ namespace Walterlv.ERMail.Views
 
             var mailHost = $"@{parts[1]}";
 
-            if (OAuthDictionary.TryGetValue(mailHost, out var url))
+            if (OAuthDictionary.TryGetValue(mailHost, out var oauth))
             {
                 WebView.Visibility = Visibility.Visible;
-                WebView.Navigate(new Uri(url));
+                WebView.Navigate(new Uri(oauth.MakeUrl()));
             }
         }
 
-        private static readonly Dictionary<string, string> OAuthDictionary = new Dictionary<string, string>
+        private static readonly Dictionary<string, IOAuthInfo> OAuthDictionary = new Dictionary<string, IOAuthInfo>
         {
-            {"@outlook.com", "https://login.microsoftonline.com/common/oauth2/v2.0/authorize" }
+            {"@outlook.com", new ERMailMicrosoftOAuth()},
         };
     }
 

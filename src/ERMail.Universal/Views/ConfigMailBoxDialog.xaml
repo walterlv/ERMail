@@ -215,7 +215,7 @@
         </StackPanel>
 
         <WebView x:Name="WebView" DefaultBackgroundColor="White" Visibility="Collapsed"
-                 Width="360" Height="360" />
+                 Width="360" Height="400" />
     </Grid>
 
 </ContentDialog>
