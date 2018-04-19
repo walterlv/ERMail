@@ -13,6 +13,7 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
     <ContentDialog.Resources>
+        <local:VisibilityReverseConverter x:Key="VisibilityReverseConverter" />
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="0 8" />
         </Style>
@@ -186,29 +187,35 @@
         </Style>
     </ContentDialog.Resources>
 
-    <StackPanel>
-        <TextBlock Text="{x:Bind ErrorTip}" />
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
-                      Width="360" MinHeight="240" MaxHeight="300">
-            <StackPanel>
-                <TextBlock Text="Email address" />
-                <TextBox PlaceholderText="someone@example.com" Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.Address), Mode=TwoWay}" />
-                <TextBlock Text="User name (for signing in)" />
-                <TextBox Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.UserName), Mode=TwoWay}" />
-                <TextBlock Text="Password (for signing in)" />
-                <PasswordBox Password="{x:Bind DataContext.(models:MailBoxConnectionInfo.Password), Mode=TwoWay}" />
-                <TextBlock Text="Account name (will be displayed on the app header)" />
-                <TextBox Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.AccountName), Mode=TwoWay}" />
-                <TextBlock Text="Envelope name (will be in the mail content)" />
-                <TextBox Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.EnvelopeName), Mode=TwoWay}" />
-                <TextBlock Text="Incoming mail server" />
-                <TextBox PlaceholderText="example.com or example.com:993" Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.IncomingServer), Mode=TwoWay}" />
-                <TextBlock Text="Outgoing (SMTP) mail server" />
-                <TextBox PlaceholderText="example.com or example.com:465" Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.OutgoingServer), Mode=TwoWay}" />
-                <TextBlock Margin="0 8 0 32" TextWrapping="WrapWholeWords"
-                           Text="We'll save this information, so you don't have to sign in every time." />
-            </StackPanel>
-        </ScrollViewer>
-    </StackPanel>
+    <Grid>
+        <StackPanel Visibility="{x:Bind WebView.Visibility, Mode=OneWay, Converter={StaticResource VisibilityReverseConverter}}">
+            <TextBlock Text="{x:Bind ErrorTip}" />
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                          Width="360" MinHeight="240" MaxHeight="300">
+                <StackPanel>
+                    <TextBlock Text="Email address" />
+                    <TextBox PlaceholderText="someone@example.com" LostFocus="AddressTextBox_LostFocus"
+                             Text="{Binding Address, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="User name (for signing in)" />
+                    <TextBox Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.UserName), Mode=TwoWay}" />
+                    <TextBlock Text="Password (for signing in)" />
+                    <PasswordBox Password="{x:Bind DataContext.(models:MailBoxConnectionInfo.Password), Mode=TwoWay}" />
+                    <TextBlock Text="Account name (will be displayed on the app header)" />
+                    <TextBox Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.AccountName), Mode=TwoWay}" />
+                    <TextBlock Text="Envelope name (will be in the mail content)" />
+                    <TextBox Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.EnvelopeName), Mode=TwoWay}" />
+                    <TextBlock Text="Incoming mail server" />
+                    <TextBox PlaceholderText="example.com or example.com:993" Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.IncomingServer), Mode=TwoWay}" />
+                    <TextBlock Text="Outgoing (SMTP) mail server" />
+                    <TextBox PlaceholderText="example.com or example.com:465" Text="{x:Bind DataContext.(models:MailBoxConnectionInfo.OutgoingServer), Mode=TwoWay}" />
+                    <TextBlock Margin="0 8 0 32" TextWrapping="WrapWholeWords"
+                               Text="We'll save this information, so you don't have to sign in every time." />
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+
+        <WebView x:Name="WebView" DefaultBackgroundColor="White" Visibility="Collapsed"
+                 Width="360" Height="360" />
+    </Grid>
 
 </ContentDialog>
