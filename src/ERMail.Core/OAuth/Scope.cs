@@ -39,13 +39,8 @@ namespace Walterlv.ERMail.OAuth
         /// <param name="scope"></param>
         /// <param name="otherScopes"></param>
         public Scope([NotNull] string scope, params string[] otherScopes)
+            : this(scope, otherScopes ?? Enumerable.Empty<string>())
         {
-            if (scope == null) throw new ArgumentNullException(nameof(scope));
-            _scopes.Add(scope);
-            if (otherScopes?.Any() is true)
-            {
-                _scopes.AddRange(otherScopes.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct());
-            }
         }
 
         /// <summary>
@@ -57,13 +52,18 @@ namespace Walterlv.ERMail.OAuth
         {
             if (scope == null) throw new ArgumentNullException(nameof(scope));
             if (otherScopes == null) throw new ArgumentNullException(nameof(otherScopes));
-            if (string.IsNullOrWhiteSpace(scope))
+
+            var parts = scope.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length <= 0)
             {
-                throw new ArgumentException("Cannot create scope with empty or whitespace string.", nameof(scope));
+                throw new ArgumentException("Specified scope string doesnot contains any scope values.", nameof(scope));
             }
 
-            _scopes.Add(scope);
-            _scopes.AddRange(otherScopes.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct());
+            _scopes.AddRange(parts.Distinct());
+            _scopes.AddRange(otherScopes
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .SelectMany(x => x.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries))
+                .Distinct());
         }
 
         /// <summary>
