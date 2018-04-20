@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Identity.Client;
 
 namespace Walterlv.ERMail.OAuth
 {
@@ -12,7 +15,7 @@ namespace Walterlv.ERMail.OAuth
 
         public Tenant Tenant { get; } = "common";
 
-        public Scope Scope { get; } = "openid profile email";
+        public Scope Scope { get; } = "openid profile offline_access email";
 
         public string ResponseType { get; } = "code";
 
@@ -23,6 +26,43 @@ namespace Walterlv.ERMail.OAuth
 &&response_type={ResponseType}
 &scope={Scope}");
             return uri;
+        }
+
+        public async Task<string> AcquireTokenAsync()
+        {
+            var publicClientApp = new PublicClientApplication(ClientId);
+            AuthenticationResult authResult;
+
+            try
+            {
+                authResult =
+                    await publicClientApp.AcquireTokenSilentAsync(Scope, publicClientApp.Users.FirstOrDefault());
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+                System.Diagnostics.Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+
+                try
+                {
+                    authResult = await publicClientApp.AcquireTokenAsync(Scope);
+                }
+                catch (MsalException msalex)
+                {
+                    // ResultText.Text = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                // ResultText.Text = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
+                throw;
+            }
+
+            return authResult.AccessToken;
+            //ResultText.Text = await GetHttpContentWithToken(_graphAPIEndpoint, authResult.AccessToken);
+            //DisplayBasicTokenInfo(authResult);
+            //this.SignOutButton.Visibility = Visibility.Visible;
         }
     }
 }

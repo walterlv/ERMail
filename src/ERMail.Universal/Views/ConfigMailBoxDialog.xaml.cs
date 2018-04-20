@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using System.Web;
+using Windows.Security.Authentication.Web;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using MailKit.Security;
-using RestSharp;
-using RestSharp.Authenticators;
 using Walterlv.ERMail.Mailing;
 using Walterlv.ERMail.Models;
 using Walterlv.ERMail.OAuth;
@@ -60,7 +57,7 @@ namespace Walterlv.ERMail.Views
             }
         }
 
-        private void AddressTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private async void AddressTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             var parts = ConnectionInfo.Address?.Split(new[] {'@'}, StringSplitOptions.RemoveEmptyEntries);
             if (!(parts?.Length is 2)) return;
@@ -69,8 +66,12 @@ namespace Walterlv.ERMail.Views
 
             if (!OAuthDictionary.TryGetValue(mailHost, out var oauth)) return;
 
-            WebView.Visibility = Visibility.Visible;
-            WebView.Navigate(oauth.MakeUrl());
+            var authenticationResult = await WebAuthenticationBroker.AuthenticateAsync(
+                WebAuthenticationOptions.UseCorporateNetwork, oauth.MakeUrl());
+            await new MessageDialog(authenticationResult.ResponseData).ShowAsync();
+
+            //WebView.Visibility = Visibility.Visible;
+            //WebView.Navigate(oauth.MakeUrl());
         }
 
         private static readonly Dictionary<string, IOAuthInfo> OAuthDictionary = new Dictionary<string, IOAuthInfo>
