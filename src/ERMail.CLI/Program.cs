@@ -23,6 +23,7 @@ namespace Walterlv.ERMail
 
             // Load or input connection info.
             var connectionInfo = await ReadConnectionInfo(localFolder);
+            PasswordManager.Current.Add(connectionInfo.Address, connectionInfo.Password);
 
             var cache = MailBoxCache.Get(localFolder, connectionInfo, PasswordManager.Current);
 

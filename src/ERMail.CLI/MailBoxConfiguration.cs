@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading.Tasks;
 using MailKit.Security;
@@ -26,7 +27,7 @@ namespace Walterlv.ERMail
                 {
                     Address = emailAddress,
                     UserName = emailAddress,
-                    Password = password.ToString(),
+                    Password = SecureStringToString(password),
                     IncomingServer = server,
                     OutgoingServer = server,
                 };
@@ -81,6 +82,20 @@ namespace Walterlv.ERMail
                 }
             }
             return pwd;
+        }
+
+        private static string SecureStringToString(SecureString value)
+        {
+            var valuePtr = IntPtr.Zero;
+            try
+            {
+                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(value);
+                return Marshal.PtrToStringUni(valuePtr);
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
+            }
         }
     }
 }

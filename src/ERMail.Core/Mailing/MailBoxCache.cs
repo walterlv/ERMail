@@ -345,7 +345,7 @@ namespace Walterlv.ERMail.Mailing
 
         private void FillPassword(MailBoxConnectionInfo info)
         {
-            if (!string.IsNullOrWhiteSpace(info.Address))
+            if (!string.IsNullOrWhiteSpace(info.Address) && string.IsNullOrWhiteSpace(info.Password))
             {
                 info.Password = _passwordManager.Retrieve(info.Address);
             }
