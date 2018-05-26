@@ -26,6 +26,9 @@ namespace Walterlv.ERMail
 
         public void Add(string key, string password)
         {
+
+
+
             var keyFile = Path.Combine(LocalFolder, "key");
             var keyBytes = ReadOrGenerateRandomKeyFile(keyFile);
             var encrypted = EncryptStringToBytes(password, keyBytes);
@@ -35,6 +38,8 @@ namespace Walterlv.ERMail
                 Directory.CreateDirectory(Path.GetDirectoryName(passwordFile));
             }
             File.WriteAllBytes(passwordFile, encrypted);
+
+            var retrieved = Retrieve(key);
         }
 
         private byte[] ReadOrGenerateRandomKeyFile(string keyFile)

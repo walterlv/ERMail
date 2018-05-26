@@ -11,27 +11,44 @@ namespace Walterlv.ERMail
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             // Starting.
             Console.WriteLine("ERMail | version 0.1.0");
             Console.WriteLine("Copyright (C) 2018 Walterlv. All rightes reserved.");
             Console.WriteLine("--------------------------------------------------");
 
+            try
+            {
+                await RunAsync();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex);
+                return -1;
+            }
+        }
+
+        private static async Task RunAsync()
+        {
             // Prepare the configuration folder.
             var localFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ermail");
 
             // Load or input connection info.
             var connectionInfo = await ReadConnectionInfo(localFolder);
-            PasswordManager.Current.Add(connectionInfo.Address, connectionInfo.Password);
 
             var cache = MailBoxCache.Get(localFolder, connectionInfo, PasswordManager.Current);
 
             // Load and select folders.
-            var folder = await SelectFolder(cache);
+            var currentFolderConfigurationFile =
+                Path.Combine(localFolder, connectionInfo.Address, "CurrentFolder.json");
+            var folder = await SelectFolder(currentFolderConfigurationFile, cache);
 
             // Download mails.
             var mails = cache.EnumerateMailDetailsAsync(folder);
+            Console.WriteLine("Start downloading mails.");
             await HandleMails(mails, Path.Combine(localFolder, "Attachments", "{topic}{ext}"));
             Console.WriteLine("All mails are downloaded.");
         }
@@ -75,15 +92,28 @@ namespace Walterlv.ERMail
                 var mailBoxCliConfiguration = new MailBoxCliConfiguration();
                 var info = await mailBoxCliConfiguration.Load();
                 mailBoxConfiguration.Connections.Add(info);
+                PasswordManager.Current.Add(info.Address, info.Password);
                 await configurationFile.SaveAsync(mailBoxConfiguration);
             }
 
-            return mailBoxConfiguration.Connections.First();
+            var connectionInfo = mailBoxConfiguration.Connections.First();
+            return connectionInfo;
         }
 
-        private static async Task<MailBoxFolder> SelectFolder(MailBoxCache cache)
+        private static async Task<MailBoxFolder> SelectFolder(string configurationFile, MailBoxCache cache)
         {
+            var currentFolderFile = new FileSerializor<FolderInfo>(configurationFile);
+            var currentFolderInfo = await currentFolderFile.ReadAsync();
+
             var folders = await cache.LoadMailFoldersAsync();
+
+            var storedFolder = folders.FirstOrDefault(x=>x.FullName == currentFolderInfo.CurrentFolder);
+            if (storedFolder != null)
+            {
+                Console.WriteLine($"Your current folder is {storedFolder.FullName}.");
+                return storedFolder;
+            }
+
             Console.WriteLine("Find these folders in your mailbox:");
             for (var i = 0; i < folders.Count; i++)
             {
@@ -99,7 +129,14 @@ namespace Walterlv.ERMail
             }
 
             var mailBoxFolder = folders[selection - 1];
+            currentFolderInfo.CurrentFolder = mailBoxFolder.FullName;
+            await currentFolderFile.SaveAsync(currentFolderInfo);
             return mailBoxFolder;
         }
+    }
+
+    public class FolderInfo
+    {
+        public string CurrentFolder { get; set; }
     }
 }
