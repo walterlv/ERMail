@@ -1,30 +1,57 @@
 ﻿using System;
 using System.Security;
+using System.Threading.Tasks;
+using MailKit.Security;
+using Walterlv.ERMail.Mailing;
 using Walterlv.ERMail.Models;
 
 namespace Walterlv.ERMail
 {
     public class MailBoxCliConfiguration
     {
-        public MailBoxConnectionInfo Load()
+        public async Task<MailBoxConnectionInfo> Load()
         {
             Console.WriteLine("No user found, create a new one.");
 
-            Console.Write("Email address: ");
-            var emailAddress = Console.ReadLine();
-            Console.Write("Password: ");
-            var password = ReadPassword();
-            Console.Write("Incoming(IMAP) and outgoing(SMTP) mail server: ");
-            var server = Console.ReadLine();
-
-            return new MailBoxConnectionInfo
+            while (true)
             {
-                Address = emailAddress,
-                UserName = emailAddress,
-                Password = password.ToString(),
-                IncomingServer = server,
-                OutgoingServer = server,
-            };
+                Console.Write("Email address: ");
+                var emailAddress = Console.ReadLine();
+                Console.Write("Password: ");
+                var password = ReadPassword();
+                Console.Write("Incoming(IMAP) and outgoing(SMTP) mail server: ");
+                var server = Console.ReadLine();
+
+                var connectionInfo = new MailBoxConnectionInfo
+                {
+                    Address = emailAddress,
+                    UserName = emailAddress,
+                    Password = password.ToString(),
+                    IncomingServer = server,
+                    OutgoingServer = server,
+                };
+
+                var client = new IncomingMailClient(connectionInfo);
+                try
+                {
+                    await client.TestConnectionAsync();
+                    return connectionInfo;
+                }
+                catch (AuthenticationException ex)
+                {
+                    var foregroundColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                    Console.ForegroundColor = foregroundColor;
+                }
+                catch (Exception ex)
+                {
+                    var foregroundColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                    Console.ForegroundColor = foregroundColor;
+                }
+            }
         }
 
         public SecureString ReadPassword()

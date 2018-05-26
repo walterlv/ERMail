@@ -253,6 +253,96 @@ namespace Walterlv.ERMail.Mailing
             });
         }
 
+
+        public async Task<MailContentCache> DownloadMailAsync(MailBoxFolder folder, uint id, Action<long, long> reportProgress)
+        {
+            var contentfileName = Path.Combine(Directory, "Mails", $"{id}.json");
+            var htmlFileName = Path.Combine(Directory, "Mails", $"{id}.html");
+            var attachmentDirectory = Path.Combine(Directory, "Mails", $"{id}.attachments");
+            var cache = new FileSerializor<MailContentCache>(contentfileName);
+            var contentCache = await cache.ReadAsync();
+            if (contentCache.Content != null && File.Exists(contentCache.HtmlFileName))
+            {
+                return contentCache;
+            }
+
+            FillPassword(_connectionInfo);
+            using (var client = await new IncomingMailClient(_connectionInfo).ConnectAsync())
+            {
+                var mailFolder = await client.GetFolderAsync(folder.FullName);
+                mailFolder.Open(FolderAccess.ReadOnly);
+
+                var message = await mailFolder.GetMessageAsync(new UniqueId(id));
+                var htmlBody = message.HtmlBody;
+                var attachments = message.Attachments.Select(x => (x.ContentDisposition.FileName, x));
+                var attachmentFiles = new List<string>();
+                foreach (var (fileName, attachment) in attachments)
+                {
+                    if (!System.IO.Directory.Exists(attachmentDirectory))
+                    {
+                        System.IO.Directory.CreateDirectory(attachmentDirectory);
+                    }
+                    var tempFileName = $"{fileName}.downloading";
+                    var tempFile = Path.Combine(attachmentDirectory, tempFileName);
+                    var file = Path.Combine(attachmentDirectory, fileName);
+                    await attachment.WriteToAsync(tempFile);
+
+                    File.Move(tempFile, file);
+                    attachmentFiles.Add(file);
+                }
+
+                var content = new MailContentCache
+                {
+                    Topic = message.Subject,
+                    Content = message.TextBody ?? htmlBody,
+                    HtmlFileName = htmlFileName,
+                    AttachmentFileNames = attachmentFiles,
+                };
+                await cache.SaveAsync(content);
+                File.WriteAllText(htmlFileName, htmlBody);
+
+                return content;
+            }
+        }
+
+        public IAsyncEnumerable<MailContentCache> EnumerateMailDetailsAsync(MailBoxFolder folder, Action<long, long> reportProgress)
+        {
+            return new AsyncEnumerable<MailContentCache>(async yield =>
+            {
+                try
+                {
+                    var startIndex = 0;
+                    while (true)
+                    {
+                        var summaries = await LoadMailsAsync(folder, startIndex, startIndex + 20);
+                        var finished = true;
+                        foreach (var summary in summaries)
+                        {
+                            finished = false;
+                            var contentCache = await DownloadMailAsync(folder, summary.MailIds.First(), reportProgress);
+                            await yield.ReturnAsync(contentCache);
+                        }
+
+                        startIndex += 20;
+
+                        if (finished)
+                        {
+                            break;
+                        }
+                    }
+                    yield.Break();
+                }
+                catch (Exception ex)
+                {
+                    yield.Break();
+                    if (Debugger.IsAttached)
+                    {
+                        Debugger.Break();
+                    }
+                }
+            });
+        }
+
         private void FillPassword(MailBoxConnectionInfo info)
         {
             if (!string.IsNullOrWhiteSpace(info.Address))

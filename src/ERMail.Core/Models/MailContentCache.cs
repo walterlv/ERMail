@@ -1,4 +1,6 @@
-﻿namespace Walterlv.ERMail.Models
+﻿using System.Collections.Generic;
+
+namespace Walterlv.ERMail.Models
 {
     /// <summary>
     /// Stores the fetched mail content of a mail.
@@ -21,5 +23,10 @@
         /// It is recommended to store the file name in relative path.
         /// </summary>
         public string HtmlFileName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the attachment file names.
+        /// </summary>
+        public List<string> AttachmentFileNames { get; set; } = new List<string>();
     }
 }

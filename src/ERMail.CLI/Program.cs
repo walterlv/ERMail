@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Async;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,21 +22,71 @@ namespace Walterlv.ERMail
             var localFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ermail");
 
             // Load or input connection info.
+            var connectionInfo = await ReadConnectionInfo(localFolder);
+
+            var cache = MailBoxCache.Get(localFolder, connectionInfo, PasswordManager.Current);
+
+            // Load and select folders.
+            var folder = await SelectFolder(cache);
+
+            // Download mails.
+            var mails = cache.EnumerateMailDetailsAsync(folder, OnProgressReported);
+            await HandleMails(mails, Path.Combine(localFolder, "Attachments", "{topic}{ext}"));
+            Console.WriteLine("All mails are downloaded.");
+        }
+
+        private static void OnProgressReported(long downloaded, long total)
+        {
+
+        }
+
+        private static async Task HandleMails(IAsyncEnumerable<MailContentCache> mails, string fileFormat)
+        {
+            await mails.ForEachAsync(async mail =>
+            {
+                if (mail.AttachmentFileNames.Any())
+                {
+                    foreach (var attachment in mail.AttachmentFileNames)
+                    {
+                        var fileName = fileFormat.Replace("{topic}", mail.Topic, StringComparison.OrdinalIgnoreCase);
+                        fileName = fileName.Replace("{ext}", Path.GetExtension(attachment), StringComparison.OrdinalIgnoreCase);
+                        var directory = Path.GetDirectoryName(fileName);
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
+                        File.Copy(attachment, fileName, true);
+                    }
+                    Console.WriteLine($"Downloaded: [{mail.Topic}]");
+                    Console.Write("Downloading...");
+                    Console.CursorLeft = 0;
+                }
+                else
+                {
+                    Console.Write($"No attachment found: [{string.Join("", mail.Topic.Take(20))}]");
+                    Console.CursorLeft = 0;
+                }
+            });
+        }
+
+        private static async Task<MailBoxConnectionInfo> ReadConnectionInfo(string localFolder)
+        {
             var configurationFile = new FileSerializor<MailBoxConfiguration>(
                 Path.Combine(localFolder, "MailBoxConfiguration.json"));
             var mailBoxConfiguration = await configurationFile.ReadAsync();
             if (!mailBoxConfiguration.Connections.Any())
             {
                 var mailBoxCliConfiguration = new MailBoxCliConfiguration();
-                var info = mailBoxCliConfiguration.Load();
+                var info = await mailBoxCliConfiguration.Load();
                 mailBoxConfiguration.Connections.Add(info);
                 await configurationFile.SaveAsync(mailBoxConfiguration);
             }
 
-            var connectionInfo = mailBoxConfiguration.Connections.First();
-            var cache = MailBoxCache.Get(localFolder, connectionInfo, PasswordManager.Current);
+            return mailBoxConfiguration.Connections.First();
+        }
 
-            // Load and select folders.
+        private static async Task<MailBoxFolder> SelectFolder(MailBoxCache cache)
+        {
             var folders = await cache.LoadMailFoldersAsync();
             Console.WriteLine("Find these folders in your mailbox:");
             for (var i = 0; i < folders.Count; i++)
@@ -50,8 +101,9 @@ namespace Walterlv.ERMail
                 Console.Write($"Please select the folder you want in [1~{folders.Count}]: ");
                 int.TryParse(Console.ReadLine(), out selection);
             }
-            
-            // Download mails.
+
+            var mailBoxFolder = folders[selection - 1];
+            return mailBoxFolder;
         }
     }
 }
