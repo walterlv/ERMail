@@ -30,14 +30,9 @@ namespace Walterlv.ERMail
             var folder = await SelectFolder(cache);
 
             // Download mails.
-            var mails = cache.EnumerateMailDetailsAsync(folder, OnProgressReported);
+            var mails = cache.EnumerateMailDetailsAsync(folder);
             await HandleMails(mails, Path.Combine(localFolder, "Attachments", "{topic}{ext}"));
             Console.WriteLine("All mails are downloaded.");
-        }
-
-        private static void OnProgressReported(long downloaded, long total)
-        {
-
         }
 
         private static async Task HandleMails(IAsyncEnumerable<MailContentCache> mails, string fileFormat)

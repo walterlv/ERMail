@@ -112,17 +112,17 @@ namespace Walterlv.ERMail.Mailing
         /// <returns></returns>
         public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 100)
         {
-            var cache = new FileSerializor<List<MailSummary>>(
-                Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
-            if (start == 0)
-            {
-                // Temporarily load cache only for first 100.
-                var cachedSummary = await cache.ReadAsync();
-                if (cachedSummary.Any())
-                {
-                    return cachedSummary;
-                }
-            }
+            //var cache = new FileSerializor<List<MailSummary>>(
+            //    Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
+            //if (start == 0)
+            //{
+            //    // Temporarily load cache only for first 100.
+            //    var cachedSummary = await cache.ReadAsync();
+            //    if (cachedSummary.Any())
+            //    {
+            //        return cachedSummary;
+            //    }
+            //}
 
             FillPassword(_connectionInfo);
             var result = new List<MailSummary>();
@@ -162,7 +162,7 @@ namespace Walterlv.ERMail.Mailing
                 }
             }
 
-            await cache.SaveAsync(result);
+            //await cache.SaveAsync(result);
 
             return result;
         }
@@ -254,7 +254,7 @@ namespace Walterlv.ERMail.Mailing
         }
 
 
-        public async Task<MailContentCache> DownloadMailAsync(MailBoxFolder folder, uint id, Action<long, long> reportProgress)
+        public async Task<MailContentCache> DownloadMailAsync(MailBoxFolder folder, uint id)
         {
             var contentfileName = Path.Combine(Directory, "Mails", $"{id}.json");
             var htmlFileName = Path.Combine(Directory, "Mails", $"{id}.html");
@@ -305,7 +305,7 @@ namespace Walterlv.ERMail.Mailing
             }
         }
 
-        public IAsyncEnumerable<MailContentCache> EnumerateMailDetailsAsync(MailBoxFolder folder, Action<long, long> reportProgress)
+        public IAsyncEnumerable<MailContentCache> EnumerateMailDetailsAsync(MailBoxFolder folder)
         {
             return new AsyncEnumerable<MailContentCache>(async yield =>
             {
@@ -319,7 +319,7 @@ namespace Walterlv.ERMail.Mailing
                         foreach (var summary in summaries)
                         {
                             finished = false;
-                            var contentCache = await DownloadMailAsync(folder, summary.MailIds.First(), reportProgress);
+                            var contentCache = await DownloadMailAsync(folder, summary.MailIds.First());
                             await yield.ReturnAsync(contentCache);
                         }
 
