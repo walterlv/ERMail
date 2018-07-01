@@ -111,12 +111,12 @@
                               FallbackColor="#F6F6F7" />
             </StackPanel.Background>
             <ComboBox x:Name="MailFolderComboBox" Margin="4" MinWidth="200"
-                      ItemsSource="{Binding Folders}" DisplayMemberPath="Name"
+                      ItemsSource="{x:Bind ViewModel.Folders}" DisplayMemberPath="Name"
                       SelectionChanged="MailFolderComboBox_SelectionChanged"/>
         </StackPanel>
 
         <ListView x:Name="MailListView" Grid.Row="1" Grid.Column="0"
-                  DataContext="{Binding CurrentFolder}" ItemsSource="{Binding Mails}"
+                  DataContext="{x:Bind ViewModel.CurrentFolder}" ItemsSource="{x:Bind ViewModel.CurrentFolder.Mails}"
                   BorderThickness="0 1 0 0" BorderBrush="{StaticResource Brush.ListBorder}"
                   ItemContainerStyle="{StaticResource Style.MailGroupListViewItem}"
                   SelectionChanged="MailGroupListView_SelectionChanged">
@@ -133,12 +133,12 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0"
-                                   FontSize="18" Text="{Binding Title}" />
+                                   FontSize="18" Text="{x:Bind Title}" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                   FontSize="12" Text="{Binding Topic}"
+                                   FontSize="12" Text="{x:Bind Topic}"
                                    TextTrimming="WordEllipsis" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                   FontSize="12" Foreground="DimGray" Text="{Binding Excerpt}"
+                                   FontSize="12" Foreground="DimGray" Text="{x:Bind Excerpt}"
                                    TextTrimming="WordEllipsis" />
                     </Grid>
                 </DataTemplate>

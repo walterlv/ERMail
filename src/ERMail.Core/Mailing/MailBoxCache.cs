@@ -110,19 +110,19 @@ namespace Walterlv.ERMail.Mailing
         /// <param name="start"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 100)
+        public async Task<IList<MailSummary>> LoadMailsAsync(MailBoxFolder folder, int start = 0, int length = 20)
         {
-            //var cache = new FileSerializor<List<MailSummary>>(
-            //    Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
-            //if (start == 0)
-            //{
-            //    // Temporarily load cache only for first 100.
-            //    var cachedSummary = await cache.ReadAsync();
-            //    if (cachedSummary.Any())
-            //    {
-            //        return cachedSummary;
-            //    }
-            //}
+            var cache = new FileSerializor<List<MailSummary>>(
+                Path.Combine(Directory, "Folders", folder.FullName, "summaries.json"));
+            if (start == 0)
+            {
+                // Temporarily load cache only for first 100.
+                var cachedSummary = await cache.ReadAsync();
+                if (cachedSummary.Any())
+                {
+                    return cachedSummary;
+                }
+            }
 
             FillPassword(_connectionInfo);
             var result = new List<MailSummary>();
