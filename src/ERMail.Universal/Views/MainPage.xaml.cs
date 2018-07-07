@@ -124,6 +124,18 @@ namespace Walterlv.ERMail.Views
             }
         }
 
+        private async void MailGroupListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            WebView.Navigate(new Uri("about:blank"));
+            if (Main.CurrentMailBox.ConnectionInfo is null) return;
+            if (!(e.AddedItems.FirstOrDefault() is MailGroupViewModel vm)) return;
+
+            var mailCache = await MailCache.LoadMailAsync(Main.CurrentMailBox.CurrentFolder, vm.MailIds.First());
+            var file = await StorageFile.GetFileFromPathAsync(mailCache.HtmlFileName);
+            var text = await FileIO.ReadTextAsync(file);
+            WebView.NavigateToString(text);
+        }
+
         private MailBoxCache _mailCache;
     }
 }
