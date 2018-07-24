@@ -171,7 +171,7 @@
       <Version>2.0.180717002-prerelease</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI">
-      <Version>8.0.0-alpha0117</Version>
+      <Version>8.3.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

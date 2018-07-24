@@ -1,15 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.41">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net471</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1;net471;uap10.0.16299</TargetFrameworks>
     <RootNamespace>Walterlv.ERMail</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AsyncEnumerator" Version="2.1.1" />
+    <PackageReference Include="AsyncEnumerator" Version="2.2.1" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-    <PackageReference Include="MailKit" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="1.1.2-preview0008" />
+    <PackageReference Include="MailKit" Version="2.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="ReactiveUI" Version="8.0.0-alpha0117" />
-    <PackageReference Include="RestSharp" Version="106.2.1" />
+    <PackageReference Include="ReactiveUI" Version="8.3.1" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 </Project>

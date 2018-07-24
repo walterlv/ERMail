@@ -76,7 +76,7 @@ namespace Walterlv.ERMail.Views
 
         private static readonly Dictionary<string, IOAuthInfo> OAuthDictionary = new Dictionary<string, IOAuthInfo>
         {
-            {"@outlook.com", new ERMailMicrosoftOAuth()},
+            //{"@outlook.com", new ERMailMicrosoftOAuth()},
         };
     }
 

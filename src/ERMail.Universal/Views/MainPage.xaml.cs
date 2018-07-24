@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI;
+using Windows.UI.Composition;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Walterlv.ERMail.Mailing;
@@ -18,10 +20,18 @@ namespace Walterlv.ERMail.Views
         public MainPage()
         {
             InitializeComponent();
+            Setup();
 
             var localFolder = ApplicationData.Current.LocalFolder;
             _configurationFile = new FileSerializor<MailBoxConfiguration>(
                 Path.Combine(localFolder.Path, "MailBoxConfiguration.json"));
+        }
+
+        private void Setup()
+        {
+            var compositor = new Compositor();
+            var spriteVisual = compositor.CreateSpriteVisual();
+            spriteVisual.Brush = compositor.CreateColorBrush(Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
         }
 
         private readonly FileSerializor<MailBoxConfiguration> _configurationFile;
