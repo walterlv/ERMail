@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tc="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:vm="using:Walterlv.ERMail.ViewModels"
     mc:Ignorable="d" Background="#2086B5">
     <Page.Resources>
@@ -16,7 +17,6 @@
             <Setter Property="FontSize" Value="12" />
         </Style>
     </Page.Resources>
-
     <Grid>
         <tc:MasterDetailsView ItemContainerStyle="{StaticResource Style.ListViewItem.MailGroup}"
                               ItemsSource="{Binding CurrentMailBox.CurrentFolder.Mails}"

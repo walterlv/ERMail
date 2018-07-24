@@ -9,6 +9,7 @@ using Walterlv.ERMail.Mailing;
 using Walterlv.ERMail.Models;
 using Walterlv.ERMail.Utils;
 using Walterlv.ERMail.ViewModels;
+using MUXC = Microsoft.UI.Xaml.Controls;
 
 namespace Walterlv.ERMail.Views
 {
